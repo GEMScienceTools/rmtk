@@ -1,0 +1,14 @@
+id,exp_mod_1
+category,buildings
+taxonomy_source,GEM Taxonomy
+description,Exposure model for Nepal
+area_aggregation_type,per_asset
+area_unit,square metres
+structural_cost_aggregation_type,per_asset
+structural_cost_currency,EUR
+nonstructural_cost_aggregation_type,per_asset
+nonstructural_cost_currency,EUR
+contents_cost_aggregation_type,per_asset
+contents_cost_currency,EUR
+insurance_limit_is_absolute,FALSE
+insurance_deductible_is_absolute,FALSE
