@@ -17,12 +17,12 @@ VULNERABILITY TOOLS:
 * Nonlinear Static Methods:
     - ''R􏰅–μ–T'' relation (Dolšek and Fajfar, 2004)
     - ''SPO2IDA'' (Vamvatsikos and Cornell, 2006)
-    - Ruiz-García and Miranda (2007)
+    - ''CR􏰅–μ–T'' (Ruiz-García and Miranda, 2007)
 
 * Nonlinear Dynamic Methods:
     - Incremental Dynamic Analysis (Vamvatsikos and Cornell, 2002)
     - Multiple Stripe Analysis (Jalayer and Cornell, 2009)
-    - Damage Matrix Method
+    - Damage Probability Matrix Method
 
 
 Dependencies
