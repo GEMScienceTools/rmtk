@@ -1,5 +1,5 @@
-.pyc
-.py~
+*.pyc
+*.py~
 .ipynb_checkpoints
 .gitignore~
 *.swp
