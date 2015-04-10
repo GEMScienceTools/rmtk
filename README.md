@@ -15,9 +15,9 @@ tutorial for more information):
 VULNERABILITY TOOLS:
 
 * Nonlinear Static Methods:
-    - ''R􏰅–μ–T'' relation (Dolšek and Fajfar, 2004)
+    - ''R–μ–T'' relation (Dolšek and Fajfar, 2004)
     - ''SPO2IDA'' (Vamvatsikos and Cornell, 2006)
-    - ''CR􏰅–μ–T'' (Ruiz-García and Miranda, 2007)
+    - ''CR–μ–T'' (Ruiz-García and Miranda, 2007)
 
 * Nonlinear Dynamic Methods:
     - Incremental Dynamic Analysis (Vamvatsikos and Cornell, 2002)
