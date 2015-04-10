@@ -6,13 +6,13 @@ import math
 import os
 import rmtk
 import rmtk.plotting.common.parse_loss_maps as parselm
-import rmtk.plotting.common.parse_exposure as parsee 
+import rmtk.plotting.common.parse_exposure as parsee
 import rmtk.plotting.common.parse_vulnerability as parseev
 
 def build_map(plotting_type,risk_map,bounding_box,log_scale,exposure_model,marker_size,export_map_to_csv):
-	
-    exposure_path = os.path.dirname(rmtk.__file__) + "/plotting/input_models/" + exposure_model
-		
+
+    exposure_path = exposure_model
+
     agg_losses = True
     if plotting_type == 1:
         agg_losses = False
@@ -56,7 +56,7 @@ def define_bounding_box(bounding_box,data):
         locations.append(asset[1:3])
     locations = np.array(locations)
 
-    box = {"lon_0": None, "lat_0": None, "lon_1": None, 
+    box = {"lon_0": None, "lat_0": None, "lon_1": None,
         "lat_1": None, "lon_2": None, "lat_2": None}
 
     if bounding_box == 0:
@@ -93,7 +93,7 @@ def plot_single_map(locations,losses,box,log_scale,marker_size,title,figNo):
     map.drawstates(linewidth=0.25)
     map.drawmapboundary(fill_color='aqua')
     map.fillcontinents(color='white',lake_color='aqua')
-    
+
     scale = None
     if log_scale:
         scale = LogNorm()
@@ -140,4 +140,3 @@ def processLosses(uniqueTaxonomy,idTaxonomies,individualLosses):
             losses.append(individualLoss[3])
 
     return np.array(locations),np.array(losses)
-
