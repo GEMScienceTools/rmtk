@@ -247,15 +247,15 @@ def parse_nrml_hazard_map(nrml_hazard_map):
     for _, element in etree.iterparse(**parse_args):
         if element.tag == '%shazardMap' % NRML:
             a = element.attrib
-            metadata['statistics'] = a.get('statistics')
-            metadata['quantile_value'] = a.get('quantileValue')
             metadata['smlt_path'] = a.get('sourceModelTreePath')
             metadata['gsimlt_path'] = a.get('gsimTreePath')
             metadata['imt'] = a['IMT']
             metadata['investigation_time'] = a['investigationTime']
+            metadata['poe'] = a.get('poE')
             metadata['sa_period'] = a.get('saPeriod')
             metadata['sa_damping'] = a.get('saDamping')
-            metadata['poe'] = a.get('poe')
+            metadata['statistics'] = a.get('statistics')
+            metadata['quantile_value'] = a.get('quantileValue')
         elif element.tag == '%snode' % NRML:
             a = element.attrib
             values.append(
@@ -274,16 +274,23 @@ class HazardMap(object):
         Instantiate and parse input file
         """
         self.metadata, self.data = parse_nrml_hazard_map(input_filename)
+        self.box = {}
+        self.box["lon_1"] = min(self.data[:,0])
+        self.box["lon_2"] = max(self.data[:,0])
+        self.box["lat_1"] = min(self.data[:,1])
+        self.box["lat_2"] = max(self.data[:,1])
+        self.box["lat_length"] = abs(self.box["lat_2"] - self.box["lat_1"])
+        self.box["lon_length"] = abs(self.box["lon_2"] - self.box["lon_1"])
 
-    def plot(self, box, title, figNo, log_scale=False, marker_size=20,
+    def plot(self, log_scale=False, marker_size=20,
             output_file=None, dpi=300, fmt="png", papertype="a4"):
         """
 
         """
-        plt.figure(figNo, figsize=(8, 6), dpi=300, facecolor='w',
+        plt.figure(figsize=(8, 6), dpi=300, facecolor='w',
                    edgecolor='k')
-        map = Basemap(llcrnrlon=box["lon_1"], llcrnrlat=box["lat_1"],
-            urcrnrlon=box["lon_2"], urcrnrlat=box["lat_2"], projection='mill',
+        map = Basemap(llcrnrlon=self.box["lon_1"], llcrnrlat=self.box["lat_1"],
+            urcrnrlon=self.box["lon_2"], urcrnrlat=self.box["lat_2"], projection='mill',
             resolution='i')
         x, y = map(self.data[:, 0], self.data[:, 1])
         #map.shadedrelief()
@@ -309,19 +316,23 @@ class HazardMap(object):
                        self.metadata["imt"],
                        imt_units))
 
-        if box["lat_length"] < 2:
+        if self.box["lat_length"] < 2:
             parallels = np.arange(0.,81,0.25)
         else:
             parallels = np.arange(0.,81,1.0)
         # labels = [left,right,top,bottom]
         map.drawparallels(parallels,labels=[True,False,True,False])
-        if box["lon_length"] < 2:
+        if self.box["lon_length"] < 2:
             meridians = np.arange(0.,360,0.25)
         else:
             meridians = np.arange(0.,360,1.0)
         map.drawmeridians(meridians,labels=[True,False,False,True])
 
-        plt.title(title)
+        title_string = "Hazard Map with a {:s} PoE in {:s} Years\n".format(
+             self.metadata["poe"],
+             self.metadata["investigation_time"])
+        plt.title(title_string, fontsize=16)
+
         plt.show()
         if output_file:
             plt.savefig(output_file, dpi=dpi, format=fmt, papertype="a4")
