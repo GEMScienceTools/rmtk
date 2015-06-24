@@ -12,7 +12,7 @@
 # along with OpenQuake. If not, see <http://www.gnu.org/licenses/>
 #
 # DISCLAIMER
-# 
+#
 # The software nrml_convertes provided herein is released as a prototype
 # implementation on behalf of scientists and engineers working within the GEM
 # Foundation (Global Earthquake Model).
@@ -47,11 +47,8 @@ from lxml import etree
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib.colors import LogNorm, Normalize
-try:
-    from openquake.nrmllib.hazard.parsers import HazardCurveXMLParser
-except:
-    from openquake.nrmllib.hazard.parsers import HazardCurveParser
-    HazardCurveXMLParser = HazardCurveParser
+from rmtk.parsers.hazard_parsers import HazardCurveXMLParser
+
 
 NRML='{http://openquake.org/xmlns/nrml/0.4}'
 GML='{http://www.opengis.net/gml}'
@@ -97,7 +94,7 @@ class HazardCurve(object):
         self.data = _set_curves_matrix(self.hcm)
         self.loc_list = ["{:.6f}|{:.6f}".format(row[0], row[1])
                          for row in self.data]
-    
+
     def plot(self, idx, output_file=None, dpi=300, fmt="png", papertype="a4"):
         """
         Creates the hazard curve plot
@@ -198,7 +195,7 @@ class UniformHazardSpectra(HazardCurve):
         self.loc_list = ["{:.6f}|{:.6f}".format(row[0], row[1])
                          for row in self.data]
 
-    
+
     def plot(self, idx, output_file=None, dpi=300, fmt="png",
             papertype="a4"):
         """
@@ -212,14 +209,14 @@ class UniformHazardSpectra(HazardCurve):
             longitude, latitude, spectrum = self._get_curve_from_string(idx)
         else:
             raise ValueError("Index not recognised!")
-        
+
         fig = plt.figure(figsize=(7, 5))
         #fig.set_tight_layout(True)
         plt.plot(self.periods, spectrum, 'bo-', linewidth=2.0)
         plt.xlabel("Period (s)", fontsize=14)
         plt.ylabel("Spectral Acceleration (g)", fontsize=14)
         plt.grid(b=True, color='0.66', linestyle="--")
-        
+
         if longitude < 0.0:
             long_ind = "W"
         else:
@@ -311,7 +308,7 @@ class HazardMap(object):
         cbar.set_label("{:s} ({:s})".format(
                        self.metadata["imt"],
                        imt_units))
-                       
+
         if box["lat_length"] < 2:
             parallels = np.arange(0.,81,0.25)
         else:
