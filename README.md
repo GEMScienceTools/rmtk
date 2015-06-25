@@ -8,12 +8,13 @@ of the rmtk is to provide a suite of tools for the creation of seismic
 risk input models and for the post-processing and visualisation of 
 OpenQuake risk results.
 
+
+###VULNERABILITY TOOLS:
+
 The toolkit contains the following functionalities for constructing 
 seismic risk input models (please refer to the documentation and
 tutorial for more information):
 
-VULNERABILITY TOOLS:
---------------------
 * Capacity Curve Modelling Methods:
     - ''DBELA'' method
     - ''SP-BELA'' method
@@ -34,12 +35,12 @@ VULNERABILITY TOOLS:
     - Damage Probability Matrix Method
 
 
+###PLOTTING TOOLS:
+
 The toolkit contains the following functionalities for visualising 
 seismic risk results (please refer to the documentation and
 tutorial for more information):
 
-PLOTTING TOOLS:
----------------
 * OpenQuake Hazard Results
     - Seismic Hazard Curves
     - Seismic Hazard Maps
@@ -53,19 +54,19 @@ PLOTTING TOOLS:
     - Damage Distribution Statistics
 
 
+###RISK TOOLS:
+
 The toolkit contains the following functionalities for post-processing 
 probabilistic seismic hazard and risk results 
 (please refer to the documentation and tutorial for more information):
 
-RISK TOOLS:
------------
 * Probable Maximum Loss Calculator
 * Logic-Tree Branch Selector
 
 
 
-Dependencies
-------------
+
+####Dependencies
 
 The main dependencies of the toolkit are the following:
 * csv
@@ -76,8 +77,7 @@ For the libraries part of the OpenQuake suite the reader can refer to:
 http://github.com/gem
 
 
-License
--------
+####License
 
 The Risk Modeller's Toolkit (rmtk) is free software: you can redistribute 
 it and/or modify it under the terms of the GNU Affero General Public 
@@ -88,8 +88,7 @@ Copyright © 2014-2015, GEM Foundation, Chiara Casotto, Anirudh Rao,
 Vitor Silva.
 
 
-Disclaimer
-----------
+####Disclaimer
 
 The software Risk Modeller's Toolkit (rmtk) provided herein 
 is released as a prototype implementation on behalf of 
