@@ -12,7 +12,7 @@
 # along with OpenQuake. If not, see <http://www.gnu.org/licenses/>
 #
 # DISCLAIMER
-# 
+#
 # The software nrml_convertes provided herein is released as a prototype
 # implementation on behalf of scientists and engineers working within the GEM
 # Foundation (Global Earthquake Model).
@@ -47,11 +47,8 @@ from lxml import etree
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib.colors import LogNorm, Normalize
-try:
-    from openquake.nrmllib.hazard.parsers import HazardCurveXMLParser
-except:
-    from openquake.nrmllib.hazard.parsers import HazardCurveParser
-    HazardCurveXMLParser = HazardCurveParser
+from rmtk.parsers.hazard_parsers import HazardCurveXMLParser
+
 
 NRML='{http://openquake.org/xmlns/nrml/0.4}'
 GML='{http://www.opengis.net/gml}'
@@ -97,7 +94,7 @@ class HazardCurve(object):
         self.data = _set_curves_matrix(self.hcm)
         self.loc_list = ["{:.6f}|{:.6f}".format(row[0], row[1])
                          for row in self.data]
-    
+
     def plot(self, idx, output_file=None, dpi=300, fmt="png", papertype="a4"):
         """
         Creates the hazard curve plot
@@ -198,7 +195,7 @@ class UniformHazardSpectra(HazardCurve):
         self.loc_list = ["{:.6f}|{:.6f}".format(row[0], row[1])
                          for row in self.data]
 
-    
+
     def plot(self, idx, output_file=None, dpi=300, fmt="png",
             papertype="a4"):
         """
@@ -212,14 +209,14 @@ class UniformHazardSpectra(HazardCurve):
             longitude, latitude, spectrum = self._get_curve_from_string(idx)
         else:
             raise ValueError("Index not recognised!")
-        
+
         fig = plt.figure(figsize=(7, 5))
         #fig.set_tight_layout(True)
         plt.plot(self.periods, spectrum, 'bo-', linewidth=2.0)
         plt.xlabel("Period (s)", fontsize=14)
         plt.ylabel("Spectral Acceleration (g)", fontsize=14)
         plt.grid(b=True, color='0.66', linestyle="--")
-        
+
         if longitude < 0.0:
             long_ind = "W"
         else:
@@ -250,15 +247,15 @@ def parse_nrml_hazard_map(nrml_hazard_map):
     for _, element in etree.iterparse(**parse_args):
         if element.tag == '%shazardMap' % NRML:
             a = element.attrib
-            metadata['statistics'] = a.get('statistics')
-            metadata['quantile_value'] = a.get('quantileValue')
             metadata['smlt_path'] = a.get('sourceModelTreePath')
             metadata['gsimlt_path'] = a.get('gsimTreePath')
             metadata['imt'] = a['IMT']
             metadata['investigation_time'] = a['investigationTime']
+            metadata['poe'] = a.get('poE')
             metadata['sa_period'] = a.get('saPeriod')
             metadata['sa_damping'] = a.get('saDamping')
-            metadata['poe'] = a.get('poe')
+            metadata['statistics'] = a.get('statistics')
+            metadata['quantile_value'] = a.get('quantileValue')
         elif element.tag == '%snode' % NRML:
             a = element.attrib
             values.append(
@@ -277,16 +274,23 @@ class HazardMap(object):
         Instantiate and parse input file
         """
         self.metadata, self.data = parse_nrml_hazard_map(input_filename)
+        self.box = {}
+        self.box["lon_1"] = min(self.data[:,0])
+        self.box["lon_2"] = max(self.data[:,0])
+        self.box["lat_1"] = min(self.data[:,1])
+        self.box["lat_2"] = max(self.data[:,1])
+        self.box["lat_length"] = abs(self.box["lat_2"] - self.box["lat_1"])
+        self.box["lon_length"] = abs(self.box["lon_2"] - self.box["lon_1"])
 
-    def plot(self, box, title, figNo, log_scale=False, marker_size=20,
+    def plot(self, log_scale=False, marker_size=20,
             output_file=None, dpi=300, fmt="png", papertype="a4"):
         """
 
         """
-        plt.figure(figNo, figsize=(8, 6), dpi=300, facecolor='w',
+        plt.figure(figsize=(8, 6), dpi=300, facecolor='w',
                    edgecolor='k')
-        map = Basemap(llcrnrlon=box["lon_1"], llcrnrlat=box["lat_1"],
-            urcrnrlon=box["lon_2"], urcrnrlat=box["lat_2"], projection='mill',
+        map = Basemap(llcrnrlon=self.box["lon_1"], llcrnrlat=self.box["lat_1"],
+            urcrnrlon=self.box["lon_2"], urcrnrlat=self.box["lat_2"], projection='mill',
             resolution='i')
         x, y = map(self.data[:, 0], self.data[:, 1])
         #map.shadedrelief()
@@ -311,20 +315,24 @@ class HazardMap(object):
         cbar.set_label("{:s} ({:s})".format(
                        self.metadata["imt"],
                        imt_units))
-                       
-        if box["lat_length"] < 2:
+
+        if self.box["lat_length"] < 2:
             parallels = np.arange(0.,81,0.25)
         else:
             parallels = np.arange(0.,81,1.0)
         # labels = [left,right,top,bottom]
         map.drawparallels(parallels,labels=[True,False,True,False])
-        if box["lon_length"] < 2:
+        if self.box["lon_length"] < 2:
             meridians = np.arange(0.,360,0.25)
         else:
             meridians = np.arange(0.,360,1.0)
         map.drawmeridians(meridians,labels=[True,False,False,True])
 
-        plt.title(title)
+        title_string = "Hazard Map with a {:s} PoE in {:s} Years\n".format(
+             self.metadata["poe"],
+             self.metadata["investigation_time"])
+        plt.title(title_string, fontsize=16)
+
         plt.show()
         if output_file:
             plt.savefig(output_file, dpi=dpi, format=fmt, papertype="a4")

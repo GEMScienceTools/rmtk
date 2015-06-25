@@ -5,13 +5,7 @@ import argparse
 import operator
 import numpy as np
 import glob
-from lxml import etree
-
-try:
-    from openquake.nrmllib.hazard.parsers import HazardCurveXMLParser
-except:
-    from openquake.nrmllib.hazard.parsers import HazardCurveParser
-    HazardCurveXMLParser = HazardCurveParser
+from rmtk.parsers.hazard_parsers import HazardCurveXMLParser
 
 
 def rmse(predictions, targets):

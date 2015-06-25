@@ -5,14 +5,24 @@ This is the web repository of the Risk Modeller's Toolkit (rmtk).
 The rmtk is a suite of tools developed by scientists working at the 
 GEM (i.e. Global Earthquake Model) Model Facility. The main purpouse
 of the rmtk is to provide a suite of tools for the creation of seismic
-risk input models.
+risk input models and for the post-processing and visualisation of 
+OpenQuake risk results.
+
+
+###VULNERABILITY TOOLS:
 
 The toolkit contains the following functionalities for constructing 
 seismic risk input models (please refer to the documentation and
 tutorial for more information):
 
+* Capacity Curve Modelling Methods:
+    - ''DBELA'' method
+    - ''SP-BELA'' method
+    - Point Dispersion method
 
-VULNERABILITY TOOLS:
+* MDOF → Equivalent SDOF Conversion Methods:
+    - First Mode Approximation (Eurocode 8, 2004)
+    - Adaptive Approach (Casarotti and Pinho, 2007)
 
 * Nonlinear Static Methods:
     - ''R–μ–T'' relation (Dolšek and Fajfar, 2004)
@@ -25,23 +35,51 @@ VULNERABILITY TOOLS:
     - Damage Probability Matrix Method
 
 
-Dependencies
-------------
+###PLOTTING TOOLS:
 
-The main dependencies of this library are the following:
+The toolkit contains the following functionalities for visualising 
+seismic risk results (please refer to the documentation and
+tutorial for more information):
+
+* OpenQuake Hazard Results
+    - Seismic Hazard Curves
+    - Seismic Hazard Maps
+    - Uniform Hazard Spectra
+    - Ground Motion Fields
+
+* OpenQuake Risk Results
+    - Loss Exceedance Curves
+    - Loss Maps
+    - Collapse Maps
+    - Damage Distribution Statistics
+
+
+###RISK TOOLS:
+
+The toolkit contains the following functionalities for post-processing 
+probabilistic seismic hazard and risk results 
+(please refer to the documentation and tutorial for more information):
+
+* Probable Maximum Loss Calculator
+* Logic-Tree Branch Selector
+
+
+
+
+####Dependencies
+
+The main dependencies of the toolkit are the following:
 * csv
 * numpy
-* python-decorator
-* risklib (this is part of the OpenQuake suite)
+* scipy
 
-For the libraries part of the OpenQuake suite the reader can refer to 
+For the libraries part of the OpenQuake suite the reader can refer to:
 http://github.com/gem
 
 
-License
--------
+####License
 
-The Risk Modeller's Toolkit is free software: you can redistribute 
+The Risk Modeller's Toolkit (rmtk) is free software: you can redistribute 
 it and/or modify it under the terms of the GNU Affero General Public 
 License as published by the Free Software Foundation, either version 
 3 of the License, or (at your option) any later version.
@@ -50,8 +88,7 @@ Copyright © 2014-2015, GEM Foundation, Chiara Casotto, Anirudh Rao,
 Vitor Silva.
 
 
-Disclaimer
-----------
+####Disclaimer
 
 The software Risk Modeller's Toolkit (rmtk) provided herein 
 is released as a prototype implementation on behalf of 
