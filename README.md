@@ -1,41 +1,15 @@
-Risk Modeller's Toolkit (rmtk)
+Risk Modeller's Toolkit (RMTK)
 ==============================
 
-This is the web repository of the Risk Modeller's Toolkit (rmtk). 
-The rmtk is a suite of tools developed by scientists working at the 
-GEM (i.e. Global Earthquake Model) Model Facility. The main purpouse
-of the rmtk is to provide a suite of tools for the creation of seismic
+This is the web repository of the Risk Modeller's Toolkit (RMTK). 
+The RMTK is a suite of tools developed by scientists working at the
+Global Earthquake Model (GEM) Foundation. The main purpouse
+of the RMTK is to provide a suite of tools for the creation of seismic
 risk input models and for the post-processing and visualisation of 
 OpenQuake risk results.
 
 
-###VULNERABILITY TOOLS:
-
-The toolkit contains the following functionalities for constructing 
-seismic risk input models (please refer to the documentation and
-tutorial for more information):
-
-* Capacity Curve Modelling Methods:
-    - ''DBELA'' method
-    - ''SP-BELA'' method
-    - Point Dispersion method
-
-* MDOF → Equivalent SDOF Conversion Methods:
-    - First Mode Approximation (Eurocode 8, 2004)
-    - Adaptive Approach (Casarotti and Pinho, 2007)
-
-* Nonlinear Static Methods:
-    - ''R–μ–T'' relation (Dolšek and Fajfar, 2004)
-    - ''SPO2IDA'' (Vamvatsikos and Cornell, 2006)
-    - ''CR–μ–T'' (Ruiz-García and Miranda, 2007)
-
-* Nonlinear Dynamic Methods:
-    - Incremental Dynamic Analysis (Vamvatsikos and Cornell, 2002)
-    - Multiple Stripe Analysis (Jalayer and Cornell, 2009)
-    - Damage Probability Matrix Method
-
-
-###PLOTTING TOOLS:
+###Plotting Tools
 
 The toolkit contains the following functionalities for visualising 
 seismic risk results (please refer to the documentation and
@@ -54,7 +28,7 @@ tutorial for more information):
     - Damage Distribution Statistics
 
 
-###RISK TOOLS:
+###Risk Tools
 
 The toolkit contains the following functionalities for post-processing 
 probabilistic seismic hazard and risk results 
@@ -62,6 +36,37 @@ probabilistic seismic hazard and risk results
 
 * Probable Maximum Loss Calculator
 * Logic-Tree Branch Selector
+
+
+###Vulnerability Tools
+
+The toolkit contains the following functionalities for constructing 
+seismic risk input models (please refer to the documentation and
+tutorial for more information):
+
+* Capacity Curve Modelling Methods:
+    - ''DBELA'' method
+    - ''SP-BELA'' method
+    - Point Dispersion method
+
+* MDOF → Equivalent SDOF Conversion Methods:
+    - First mode approximation (Eurocode 8, 2004)
+    - Adaptive approach (Casarotti and Pinho, 2007)
+
+* Direct Nonlinear Static Methods:
+    - ''R–μ–T'' relation (Dolšek and Fajfar, 2004)
+    - ''SPO2IDA'' (Vamvatsikos and Cornell, 2006)
+    - ''Cʀ–μ–T'' (Ruiz-García and Miranda, 2007)
+
+* Record Based Nonlinear Static Methods:
+    - Vidic and Fajfar (1994)
+    - Lin and Miranda 2008
+    - Miranda (2000) for firm soils
+    - ''N2'' method (Eurocode 8, 2004)
+    - Capacity spectrum method (FEMA, 2005)
+    - ''DBELA'' method (Silva et al., 2013)
+
+* Nonlinear Time-History Analysis of SDOF Oscillators
 
 
 
@@ -72,6 +77,7 @@ The main dependencies of the toolkit are the following:
 * csv
 * numpy
 * scipy
+* matplotlib
 
 For the libraries part of the OpenQuake suite the reader can refer to:
 http://github.com/gem
@@ -79,21 +85,21 @@ http://github.com/gem
 
 ####License
 
-The Risk Modeller's Toolkit (rmtk) is free software: you can redistribute 
+The Risk Modeller's Toolkit (RMTK) is free software: you can redistribute 
 it and/or modify it under the terms of the GNU Affero General Public 
 License as published by the Free Software Foundation, either version 
 3 of the License, or (at your option) any later version.
 
 Copyright © 2014-2015, GEM Foundation, Chiara Casotto, Anirudh Rao,
-Vitor Silva.
+Vitor Silva, Mabé Villar.
 
 
 ####Disclaimer
 
-The software Risk Modeller's Toolkit (rmtk) provided herein 
+The software Risk Modeller's Toolkit (RMTK) provided herein 
 is released as a prototype implementation on behalf of 
-scientists and engineers working within the GEM Foundation (Global 
-Earthquake Model). 
+scientists and engineers working within the Global Earthquake Model 
+(GEM) Foundation.
 
 It is distributed for the purpose of open collaboration and in the 
 hope that it will be useful to the scientific, engineering, disaster
@@ -110,7 +116,7 @@ Feedback and contribution to the software is welcome, and can be
 directed to the risk scientific staff of the GEM Model Facility 
 (risk@globalquakemodel.org). 
 
-The Risk Modeller's Toolkit (rmtk) is therefore distributed WITHOUT 
+The Risk Modeller's Toolkit (RMTK) is therefore distributed WITHOUT 
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
 FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
 for more details.
