@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+ <g>
+  <title>Layer 1</title>
+  <text fill="#000000" stroke="#191919" stroke-width="0" x="111.82813" y="253" id="svg_5" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Ground motion fields</text>
+  <a id="svg_17" xlink:href="rmtk/plotting/hazard_outputs/plot_hazard_curves.ipynb">
+   <text xml:space="preserve" text-anchor="middle" font-family="Sans-serif" font-size="16" id="svg_1" y="163" x="89.57813" stroke-width="0" stroke="#191919" fill="#000000">Hazard curves</text>
+  </a>
+  <a id="svg_18" xlink:href="rmtk/plotting/collapse_maps/plot_collapse_maps.ipynb">
+   <text fill="#000000" stroke="#191919" stroke-width="0" x="90.92188" y="283" id="svg_6" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Collapse maps</text>
+  </a>
+  <a id="svg_19" xlink:href="rmtk/plotting/hazard_outputs/plot_hazard_maps.ipynb">
+   <text fill="#000000" stroke="#191919" stroke-width="0" x="85.57813" y="223" id="svg_4" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Hazard maps</text>
+  </a>
+  <a id="svg_20" xlink:href="rmtk/plotting/hazard_outputs/plot_hazard_curves.ipynb">
+   <text fill="#000000" stroke="#191919" stroke-width="0" x="121.15625" y="193" id="svg_3" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Uniform hazard spectra</text>
+  </a>
+  <a id="svg_21" xlink:href="rmtk/plotting/damage_dist/plot_damage_dist.ipynb">
+   <text fill="#000000" stroke="#191919" stroke-width="0" x="109.15625" y="313" id="svg_7" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Damage distribution</text>
+  </a>
+  <a id="svg_22" xlink:href="rmtk/plotting/loss_curves/plot_loss_curves.ipynb">
+   <text fill="#000000" stroke="#191919" stroke-width="0" x="80.6875" y="343" id="svg_8" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Loss curves</text>
+  </a>
+  <a id="svg_23" xlink:href="rmtk/plotting/risk_maps/plot_risk_maps.ipynb">
+   <text fill="#000000" stroke="#191919" stroke-width="0" x="76.6875" y="373" id="svg_9" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Loss maps</text>
+  </a>
+  <a id="svg_25" xlink:href="rmtk/risk/closest_curves/closest_curves.ipynb">
+   <text fill="#000000" stroke="#191919" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="341.8125" y="193" id="svg_11" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Logic-tree selector</text>
+  </a>
+  <a id="svg_26" xlink:href="rmtk/vulnerability/model_generator/model_generator.ipynb">
+   <text transform="matrix(1,0,0,1,0,0) " fill="#000000" stroke="#191919" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="609.20313" y="163" id="svg_12" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Capacity curve generation</text>
+  </a>
+  <a id="svg_27" xlink:href="rmtk/vulnerability/mdof_to_sdof/mdof_to_sdof.ipynb">
+   <text fill="#000000" stroke="#191919" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="614.0625" y="193" id="svg_13" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">MDOF to SDOF conversion</text>
+  </a>
+  <a id="svg_28" xlink:href="rmtk/vulnerability/derivation_fragility/derivation_fragility.ipynb">
+   <text transform="matrix(1,0,0,1,0,0) " fill="#000000" stroke="#191919" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="626.07813" y="223" id="svg_14" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Direct nonlinear static methods</text>
+  </a>
+  <a id="svg_29" xlink:href="rmtk/vulnerability/derivation_fragility/derivation_fragility.ipynb">
+   <text transform="matrix(1,0,0,1,0,0) " fill="#000000" stroke="#191919" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="655" y="253" id="svg_15" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Record based nonlinear static methods</text>
+  </a>
+  <a id="svg_30" xlink:href="rmtk/vulnerability/derivation_fragility/derivation_fragility.ipynb">
+   <text transform="matrix(1,0,0,1,0,0) " fill="#000000" stroke="#191919" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="624.75" y="283" id="svg_16" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Nonlinear time history analysis</text>
+  </a>
+  <text fill="#000000" stroke="#191919" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="134" y="124.5" id="svg_31" font-size="20" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Plotting</text>
+  <rect id="svg_36" ry="10" rx="10" fill-opacity="0" height="40" width="130" y="97.5" x="307.5" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="3" stroke="#005fbf" fill="#000000"/>
+  <text id="svg_10" fill="#000000" stroke="#191919" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="372.50781" y="124.5" font-size="20" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Risk</text>
+  <rect ry="10" rx="10" fill-opacity="0" id="svg_34" height="40" width="130" y="97.5" x="548.5" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="3" stroke="#005fbf" fill="#000000"/>
+  <text id="svg_24" fill="#000000" stroke="#191919" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="613.50781" y="124.5" font-size="20" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">Vulnerability</text>
+  <rect id="svg_37" ry="10" rx="10" fill-opacity="0" height="40" width="130" y="97.5" x="68.99219" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="3" stroke="#005fbf" fill="#000000"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="30.526306" y1="158" x2="11.500009" y2="158" id="svg_39" stroke="#005fbf"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="10" y1="119" x2="10" y2="369.5" id="svg_2" stroke="#005fbf"/>
+  <line fill="none" stroke="#005fbf" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="70" y1="118" x2="8.477646" y2="118" id="svg_66"/>
+  <line fill="none" stroke="#005fbf" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="70" y1="118" x2="8.477646" y2="118" id="svg_38"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="30.526276" y1="368" x2="11.499978" y2="368" stroke="#005fbf" id="svg_43"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="30.526276" y1="338" x2="11.499978" y2="338" stroke="#005fbf" id="svg_44"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="30.526276" y1="308" x2="11.499978" y2="308" stroke="#005fbf" id="svg_45"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="30.526276" y1="278" x2="11.499978" y2="278" stroke="#005fbf" id="svg_46"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="30.526276" y1="248" x2="11.499978" y2="248" stroke="#005fbf" id="svg_47"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="30.526276" y1="218" x2="11.499978" y2="218" stroke="#005fbf" id="svg_48"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="30.526276" y1="188" x2="11.499978" y2="188" stroke="#005fbf" id="svg_49"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="508.013153" y1="158.5" x2="488.986855" y2="158.5" stroke="#005fbf" id="svg_50"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="508.013123" y1="278.5" x2="488.986825" y2="278.5" stroke="#005fbf" id="svg_54"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="508.013123" y1="248.5" x2="488.986825" y2="248.5" stroke="#005fbf" id="svg_55"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="508.013123" y1="218.5" x2="488.986825" y2="218.5" stroke="#005fbf" id="svg_56"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="508.013123" y1="188.5" x2="488.986825" y2="188.5" stroke="#005fbf" id="svg_57"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="267.013153" y1="157.5" x2="247.986855" y2="157.5" stroke="#005fbf" id="svg_58"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="246.261169" y1="118.75" x2="246.261169" y2="189" stroke="#005fbf" id="svg_71"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="267.013123" y1="187.5" x2="247.986825" y2="187.5" stroke="#005fbf" id="svg_65"/>
+  <line fill="none" stroke="#005fbf" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="306.261169" y1="117.75" x2="244.738816" y2="117.75" id="svg_72"/>
+  <line fill="none" stroke="#005fbf" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="306.261169" y1="117.75" x2="244.738816" y2="117.75" id="svg_73"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="487.261169" y1="119.75" x2="487.261169" y2="280" id="svg_74" stroke="#005fbf"/>
+  <line fill="none" stroke="#005fbf" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="547.261169" y1="118.75" x2="485.738816" y2="118.75" id="svg_75"/>
+  <line fill="none" stroke="#005fbf" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="547.261169" y1="118.75" x2="485.738816" y2="118.75" id="svg_76"/>
+  <rect ry="10" rx="10" fill-opacity="0" height="40" width="130" y="17.5" x="307.5" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="3" stroke="#005fbf" fill="#000000" id="svg_77"/>
+  <text fill="#000000" stroke="#191919" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="372.50781" y="44.5" font-size="20" font-family="Sans-serif" text-anchor="middle" xml:space="preserve" id="svg_78">RMTK</text>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="375.5" y1="58.374998" x2="375.5" y2="96.625001" id="svg_81" stroke="#005fbf"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="135.5" y1="76.5" x2="135.5" y2="96.625001" id="svg_82" stroke="#005fbf"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="617.261181" y1="77.5" x2="133.738714" y2="77.5" id="svg_80" stroke="#005fbf"/>
+  <line fill="none" stroke-width="3" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" fill-opacity="0" x1="616.5" y1="77.4375" x2="616.5" y2="97.562501" stroke="#005fbf" id="svg_83"/>
+  <a xlink:href="rmtk/risk/event_loss_tables/loss_modelling.ipynb" id="svg_32">
+   <text id="svg_33" fill="#000000" stroke="#191919" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x="318.23438" y="163" font-size="16" font-family="Sans-serif" text-anchor="middle" xml:space="preserve">PML curves</text>
+  </a>
+ </g>
+</svg>
