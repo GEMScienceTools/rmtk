@@ -289,16 +289,19 @@ class HazardMap(object):
         """
         plt.figure(figsize=(8, 6), dpi=300, facecolor='w',
                    edgecolor='k')
-        map = Basemap(llcrnrlon=self.box["lon_1"], llcrnrlat=self.box["lat_1"],
-            urcrnrlon=self.box["lon_2"], urcrnrlat=self.box["lat_2"], projection='mill',
-            resolution='i')
-        x, y = map(self.data[:, 0], self.data[:, 1])
-        #map.shadedrelief()
-        map.drawcoastlines(linewidth=0.25)
-        map.drawcountries(linewidth=0.25)
-        map.drawstates(linewidth=0.25)
-        map.drawmapboundary(fill_color='aqua')
-        map.fillcontinents(color='white',lake_color='aqua')
+        map_func = Basemap(llcrnrlon=self.box["lon_1"],
+                           llcrnrlat=self.box["lat_1"],
+                           urcrnrlon=self.box["lon_2"],
+                           urcrnrlat=self.box["lat_2"],
+                           projection='mill',
+                           resolution='i')
+        x, y = map_func(self.data[:, 0], self.data[:, 1])
+        #map_func.shadedrelief()
+        map_func.drawcoastlines(linewidth = 0.25, color = "gray")
+        map_func.drawcountries(linewidth = 1.00, color = "gray")
+        map_func.drawstates(linewidth = 0.25, color = "gray")
+        map_func.drawmapboundary(fill_color = 'lightblue')
+        map_func.fillcontinents(color = 'white', lake_color = 'lightblue')
         if log_scale:
             scale = LogNorm()
         else:
@@ -307,7 +310,7 @@ class HazardMap(object):
         plt.scatter(x, y , s=marker_size, c=self.data[:, 2], zorder=4,
             cmap='bwr',edgecolor='None',norm = scale)
 
-        cbar = map.colorbar(location='right',pad="5%")
+        cbar = map_func.colorbar(location='right',pad="5%")
         if self.metadata["imt"] == "PGV":
             imt_units = "cm/s"
         else:
@@ -317,16 +320,16 @@ class HazardMap(object):
                        imt_units))
 
         if self.box["lat_length"] < 2:
-            parallels = np.arange(0.,81,0.25)
+            parallels = np.arange(0., 81, 0.25)
         else:
-            parallels = np.arange(0.,81,1.0)
+            parallels = np.arange(0., 81, 1.00)
         # labels = [left,right,top,bottom]
-        map.drawparallels(parallels,labels=[True,False,True,False])
+        map_func.drawparallels(parallels,labels=[True,False,True,False])
         if self.box["lon_length"] < 2:
-            meridians = np.arange(0.,360,0.25)
+            meridians = np.arange(0., 360, 0.25)
         else:
-            meridians = np.arange(0.,360,1.0)
-        map.drawmeridians(meridians,labels=[True,False,False,True])
+            meridians = np.arange(0., 360, 1.00)
+        map_func.drawmeridians(meridians,labels=[True,False,False,True])
 
         title_string = "Hazard Map with a {:s} PoE in {:s} Years\n".format(
              self.metadata["poe"],
