@@ -10,7 +10,7 @@ import numpy as np
 from lxml import etree
 from collections import OrderedDict
 
-xmlNRML='{http://openquake.org/xmlns/nrml/0.4}'
+xmlNRML='{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
 
 def parse_single_damage_dist(element):
@@ -51,6 +51,7 @@ def parse_dmg_dist_total(element):
     return damage_states, damage_dist
 
 def parse_dmg_dist_tax(element):
+    taxo = []
     taxonomies = []
     damage_states = []
     damage_dist_tax = {}
@@ -59,8 +60,15 @@ def parse_dmg_dist_tax(element):
             damage_states = str(e.text).split()
         elif e.tag == '%sDDNode' % xmlNRML:
             taxonomy, damage_dist = parse_single_damage_dist(e)
-            taxonomies.append(taxonomy)
-            damage_dist_tax[taxonomy] = damage_dist
+            taxo.append(taxonomy)
+            no_tax = len(taxo)
+            for i in range(no_tax):
+                tax = taxo[i].split()
+                tax2str = str(tax)
+                print(type(tax2str))
+                print(tax2str)
+                taxonomies.append(tax)
+            damage_dist_tax[tax2str] = damage_dist
         else:
             continue
     return taxonomies, damage_states, damage_dist_tax
@@ -85,8 +93,39 @@ def parse_damage_file(input_file):
         else:
             continue
     return taxonomies, damage_states, damage_dist_tax
-
-
+    
+def save_damage_file(taxonomies,damage_states,damage_dist_tax):
+    '''
+    Saves a csv file with the damage distribution per taxonomy
+    '''
+    filename = 'Damage_dist_tax.csv'
+    mean = []
+    stdev = []
+    output = open(filename,'w')
+    ord_damage_dist = OrderedDict(sorted(damage_dist_tax.items(),key=lambda t:t[0]))
+    tax_list = ord_damage_dist.keys()
+    no_tax = len(tax_list)
+    no_ds = len(damage_states)
+        
+    header1 = 'Taxonomy'
+    header2 = ' '
+    for ds in range(no_ds):
+        header1 = header1 + ',' + str(damage_states[ds]) + ',' + ' '
+        header2 = header2 + ',' 'mean' + ',' + 'std.dev'
+    output.write(header1 + '\n')
+    output.write(header2 + '\n')
+    
+    for tax in range(no_tax):
+        tax_name = tax_list[tax].partition('[')[-1].rpartition(']')[0]
+        out_line = tax_name
+        for ds in range(no_ds):
+            mean = damage_dist_tax[tax_list[tax]][damage_states[ds]][0]
+            stdev = damage_dist_tax[tax_list[tax]][damage_states[ds]][1]
+            out_line = out_line + ',' + str(mean) + ',' + str(stdev)
+        output.write(out_line + '\n')
+    output.close()
+        
+        
 def set_up_arg_parser():
     """
     Can run as executable. To do so, set up the command line parser
