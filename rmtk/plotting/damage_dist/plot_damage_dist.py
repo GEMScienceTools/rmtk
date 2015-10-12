@@ -11,7 +11,7 @@ from matplotlib import pyplot
 from mpl_toolkits.mplot3d import Axes3D
 import parse_damage_dist as parsedd
 
-xmlNRML = '{http://openquake.org/xmlns/nrml/0.4}'
+xmlNRML = '{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
 
 def parse_taxonomy_file(taxonomy_file):
