@@ -23,7 +23,6 @@ def parse_single_damage_dist(element):
     for e in element.iter():
         if e.tag == '%staxonomy' % xmlNRML:
             taxonomy = str(e.text).split()
-            print 
         elif e.tag == '%sdamage' % xmlNRML:
             ds = e.attrib.get('ds')
             mean = float(e.attrib.get('mean'))
