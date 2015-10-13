@@ -22,7 +22,7 @@ def parse_single_damage_dist(element):
     damage_dist = {}
     for e in element.iter():
         if e.tag == '%staxonomy' % xmlNRML:
-            taxonomy = str(e.text).split()
+            taxonomy = str(e.text).split()[0]
         elif e.tag == '%sdamage' % xmlNRML:
             ds = e.attrib.get('ds')
             mean = float(e.attrib.get('mean'))
@@ -105,11 +105,11 @@ def save_damage_file(taxonomies,damage_states,damage_dist_tax):
     output.write(header2 + '\n')
     
     for tax in sorted(damage_dist_tax):
-        out_line = tax_name
+        out_line = tax
         for ds in damage_states:
             mean = damage_dist_tax[tax][ds][0]
             stdev = damage_dist_tax[tax][ds][1]
-            out_line = out_line + ',' + str(mean) + ',' + str(stdev)
+            out_line += ',' + str(mean) + ',' + str(stdev)
         output.write(out_line + '\n')
     output.close()
     
