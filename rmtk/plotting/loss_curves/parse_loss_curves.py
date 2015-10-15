@@ -10,12 +10,12 @@ import numpy as np
 from lxml import etree
 from collections import OrderedDict
 
-xmlNRML='{http://openquake.org/xmlns/nrml/0.4}'
+xmlNRML='{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
 
 def parse_single_loss_curve(element):
     '''
-    Reads the loss curve element to return the longitude, latitude and 
+    Reads the loss curve element to return the longitude, latitude and
     poes and losses
     '''
     for e in element.iter():
