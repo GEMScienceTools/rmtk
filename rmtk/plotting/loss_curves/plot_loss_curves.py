@@ -10,7 +10,7 @@ from collections import OrderedDict
 from matplotlib import pyplot
 import parse_loss_curves as parselc
 
-xmlNRML = '{http://openquake.org/xmlns/nrml/0.4}'
+xmlNRML = '{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
 
 def parse_assets_file(assets_file):
