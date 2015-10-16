@@ -23,7 +23,7 @@ from collections import OrderedDict
 from collections import namedtuple
 from lxml import etree
 
-NAMESPACE = 'http://openquake.org/xmlns/nrml/0.4'
+NAMESPACE = 'http://openquake.org/xmlns/nrml/0.5'
 GML_NAMESPACE = 'http://www.opengis.net/gml'
 
 HazardCurveData = namedtuple('HazardCurveData', 'location poes')

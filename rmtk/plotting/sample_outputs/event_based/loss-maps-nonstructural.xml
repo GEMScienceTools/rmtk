@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.4">
+<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.5">
   <lossMap investigationTime="50.0" poE="0.01" sourceModelTreePath="b1" gsimTreePath="b1" lossCategory="buildings" unit="USD" lossType="nonstructural">
     <node>
       <gml:Point>
