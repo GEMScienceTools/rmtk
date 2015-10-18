@@ -54,7 +54,7 @@ import numpy as np
 from lxml import etree
 from collections import OrderedDict
 
-xmlNRML='{http://openquake.org/xmlns/nrml/0.4}'
+xmlNRML='{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
 
 def parsePlanarSurface(element):
@@ -107,58 +107,58 @@ def parse_ses_single_file(singleFile):
     investigationTime = 0.0
 
     for _, element in etree.iterparse(singleFile):
-        if element.tag == '%sstochasticEventSet' % xmlNRML:
-            investigationTime = investigationTime + float(element.attrib.get('investigationTime'))
-        elif element.tag == '%srupture' % xmlNRML:
-            rupId = element.attrib.get('id')
-            mag = element.attrib.get('magnitude')
-            strike = element.attrib.get('strike')
-            dip = element.attrib.get('dip')
-            rake = element.attrib.get('rake')
-            tectonicRegion = element.attrib.get('tectonicRegion')
-            topLeft, topRight, bottomLeft, bottomRight = parsePlanarSurface(element) 
-            if topLeft == 0:
-                topLeft, topRight, bottomLeft, bottomRight = parseMeshRupture(element) 
-            
-                #print rupId
-                #print mag
-                #print strike
-                #print dip
-                #print rake
-                #print tectonicRegion
-                #print topLeft
-                #print topRight
-                #print bottomLeft
-                #print bottomRight
-            ses.append([rupId,mag,strike,dip,rake,tectonicRegion,topLeft[0],topLeft[1],topLeft[2],topRight[0],topRight[1],topRight[2],bottomLeft[0],bottomLeft[1],bottomLeft[2],bottomRight[0],bottomRight[1],bottomRight[2]]) 
+#        print element.tag
+        
+        if element.tag == '%sstochasticEventSetCollection' % xmlNRML:
+            SESColletion = element
+            for subElement in SESColletion.iter():
+                if subElement.tag == '%sstochasticEventSet' % xmlNRML:
+                    SESSet = subElement
+                    investigationTime = investigationTime + float(SESSet.attrib.get('investigationTime'))
+                    for subSubElement in SESSet.iter():
+                        if subSubElement.tag == '%srupture' % xmlNRML:
+                            rupture = subSubElement
+                            rupId = rupture.attrib.get('id')
+                            mag = rupture.attrib.get('magnitude')
+                            strike = rupture.attrib.get('strike')
+                            dip = rupture.attrib.get('dip')
+                            rake = rupture.attrib.get('rake')
+                            tectonicRegion = rupture.attrib.get('tectonicRegion')
+                            for geometry in rupture:
+                                if geometry.tag == '%splanarSurface' % xmlNRML:
+                                    planarSurface = geometry
+                                    topLeft, topRight, bottomLeft, bottomRight = parsePlanarSurface(planarSurface) 
+                            ses.append([rupId,mag,strike,dip,rake,tectonicRegion,topLeft[0],topLeft[1],topLeft[2],topRight[0],topRight[1],topRight[2],bottomLeft[0],bottomLeft[1],bottomLeft[2],bottomRight[0],bottomRight[1],bottomRight[2]]) 
 
     return investigationTime, ses
     
 def parse_ses(folder_ses,save_flag):
-	'''
-	Writes the ses to csv
-	'''
-	ses = []
-	investigationTime = 0.0
+    '''
+    Writes the ses to csv
+    '''
+    ses = []
+    investigationTime = 0.0
 
-	ses_files = [x for x in os.listdir(folder_ses) if x[-4:] == '.xml']
+    ses_files = [x for x in os.listdir(folder_ses) if x[-4:] == '.xml']
+    
+    for singleFile in ses_files:
+        time, subSetSES = parse_ses_single_file(folder_ses+'/'+singleFile)
+        for setSES in subSetSES:
+            ses.append(setSES)
+        investigationTime = investigationTime + float(time)
 
-	for singleFile in ses_files:
-		time, subSetSES = parse_ses_single_file(folder_ses+'/'+singleFile)
-		for setSES in subSetSES:
-			ses.append(setSES)
-		investigationTime = investigationTime + float(time)
-
-	if save_flag:
-		output_file = open(folder_ses+'.csv','w')        
-		for subSES in ses:
-			line = ''
-			for ele in subSES:
-				line = line+ele+','
-			output_file.write(line[0:-1]+'\n')
-		output_file.close()
-
-	return investigationTime, np.array(ses)
+    if save_flag:
+        output_file = open(folder_ses+'.csv','w')        
+        for subSES in ses:
+            line = ''
+            for ele in subSES:
+                line = line+ele+','
+            output_file.write(line[0:-1]+'\n')
+        output_file.close()
+    
+    print investigationTime
+    
+    return investigationTime, np.array(ses)
 
 def set_up_arg_parser():
     """

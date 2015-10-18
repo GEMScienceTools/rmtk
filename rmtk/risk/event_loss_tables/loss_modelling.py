@@ -11,7 +11,6 @@ import parse_elt
 def lossModelling(event_loss_table_folder,save_ses_csv,save_elt_csv,total_cost,return_periods):
 	
     investigationTime, ses = parse_ses.parse_ses(event_loss_table_folder,save_ses_csv)
-#    investigationTime = 170000
     event_loss_table = parse_elt.parse_elt(event_loss_table_folder,save_elt_csv)
     losses, rateOfExceedance = estimateLosses(event_loss_table,investigationTime)
     maxLoss, aal, aalr, lossLevels = estimateLossStatistics(losses,rateOfExceedance,investigationTime,total_cost,return_periods)
@@ -140,7 +139,7 @@ def captureRuptures(losses,rateOfExceedance,ses,event_loss_table,return_periods,
 def selectSubRuptures(idx,losses,event_loss_table,ses):
 
     subRupture = []
-    event_losses = np.array(event_loss_table[:,2],dtype=float)
+    event_losses = np.array(event_loss_table[:,1],dtype=float)
     for ind in idx:
         ruptureTag = event_loss_table[find_nearest(event_losses,losses[ind]),0]
         subRupture.append(ses[np.where(ses[:,0]==ruptureTag),:][0][0])
@@ -208,7 +207,7 @@ def estimateLossStatistics(losses,rateOfExceedance,investigationTime,total_cost,
 
 def estimateLosses(event_loss_table,investigationTime):
 
-    allLosses = map(float, event_loss_table[:,2])
+    allLosses = map(float, event_loss_table[:,1])
     allLosses.sort(reverse=True)
     print investigationTime
     print len(allLosses)
