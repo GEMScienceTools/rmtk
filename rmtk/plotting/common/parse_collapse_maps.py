@@ -14,7 +14,7 @@
 # along with OpenQuake. If not, see <http://www.gnu.org/licenses/>
 #
 # DISCLAIMER
-# 
+#
 # The software Risk Modellers Toolkit (rmtk) provided herein
 # is released as a prototype implementation on behalf of
 # scientists and engineers working within the GEM Foundation (Global
@@ -55,17 +55,17 @@ import numpy as np
 from lxml import etree
 from collections import OrderedDict
 
-xmlNRML='{http://openquake.org/xmlns/nrml/0.4}'
+xmlNRML='{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
 
 def parse_single_collapse_node(element):
     '''
-    Reads the collapse map node element to return the longitude, latitude and 
+    Reads the collapse map node element to return the longitude, latitude and
     asset ref and collapses
     '''
     values = []
-    
-    for e in element.iter(): 
+
+    for e in element.iter():
         if e.tag == '%spos' % xmlGML:
             coords = str(e.text).split()
             lon = float(coords[0])
@@ -74,7 +74,7 @@ def parse_single_collapse_node(element):
             ref = e.attrib.get('assetRef')
             collapses = e.attrib.get('mean')
             values.append([ref,lon,lat,float(collapses)])
-            
+
     return values
 
 def collapse_map_parser(input_file):
@@ -87,11 +87,11 @@ def collapse_map_parser(input_file):
             subValues = parse_single_collapse_node(element)
             for value in subValues:
                 values.append(value)
-    
+
     return values
-    
+
 def agg_collapse_map(values):
-    
+
     uniqueLocations = []
     aggCollapses = []
     for value in values:
@@ -100,9 +100,9 @@ def agg_collapse_map(values):
             aggCollapses.append(0)
         idx = uniqueLocations.index(value[1:3])
         aggCollapses[idx]=aggCollapses[idx]+float(value[3])
-        
+
     return uniqueLocations, aggCollapses
-    
+
 def parse_collapse_maps(nrml_collapse_map,agg_collapses,save_flag):
 	'''
 	Writes the Collapse map set to csv
@@ -110,7 +110,7 @@ def parse_collapse_maps(nrml_collapse_map,agg_collapses,save_flag):
 	values = collapse_map_parser(nrml_collapse_map)
 	agg_values = []
 	if save_flag:
-		output_file = open(nrml_collapse_map.replace('xml','csv'),'w')        
+		output_file = open(nrml_collapse_map.replace('xml','csv'),'w')
 		for iasset in range(len(values)):
 			output_file.write(values[iasset][0]+','+str(values[iasset][1])+','+
 				str(values[iasset][2])+','+str(values[iasset][3])+'\n')

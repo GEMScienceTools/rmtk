@@ -14,7 +14,7 @@
 # along with OpenQuake. If not, see <http://www.gnu.org/licenses/>
 #
 # DISCLAIMER
-# 
+#
 # The software Risk Modellers Toolkit (rmtk) provided herein
 # is released as a prototype implementation on behalf of
 # scientists and engineers working within the GEM Foundation (Global
@@ -55,17 +55,17 @@ import numpy as np
 from lxml import etree
 from collections import OrderedDict
 
-xmlNRML='{http://openquake.org/xmlns/nrml/0.4}'
+xmlNRML='{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
 
 def parse_single_loss_node(element):
     '''
-    Reads the loss map node element to return the longitude, latitude and 
+    Reads the loss map node element to return the longitude, latitude and
     asset ref and losses
     '''
     values = []
-    
-    for e in element.iter(): 
+
+    for e in element.iter():
         if e.tag == '%spos' % xmlGML:
             coords = str(e.text).split()
             lon = float(coords[0])
@@ -79,7 +79,7 @@ def parse_single_loss_node(element):
             values.append([ref,lon,lat,float(loss)])
         else:
             continue
-            
+
     return values
 
 def parse_metadata(element):
@@ -94,7 +94,7 @@ def parse_metadata(element):
     meta_info['sourceModelTreePath'] = element.attrib.get('sourceModelTreePath')
     meta_info['gsimTreePath'] = element.attrib.get('gsimTreePath')
     meta_info['lossCategory'] = element.attrib.get('lossCategory')
-    
+
     return meta_info
 
 def LossMapParser(input_file):
@@ -111,11 +111,11 @@ def LossMapParser(input_file):
                 values.append(value)
         else:
             continue
-    
+
     return values
-    
+
 def aggLossMapLosses(values):
-    
+
     uniqueLocations = []
     agg_losses = []
     for value in values:
@@ -124,9 +124,9 @@ def aggLossMapLosses(values):
             agg_losses.append(0)
         idx = uniqueLocations.index(value[1:3])
         agg_losses[idx]=agg_losses[idx]+float(value[3])
-        
+
     return uniqueLocations, agg_losses
-    
+
 def parse_risk_maps(nrml_loss_map,agg_losses,save_flag):
 	'''
 	Writes the Loss map set to csv
@@ -134,7 +134,7 @@ def parse_risk_maps(nrml_loss_map,agg_losses,save_flag):
 	values = LossMapParser(nrml_loss_map)
 	agg_values = []
 	if save_flag:
-		output_file = open(nrml_loss_map.replace('xml','csv'),'w')        
+		output_file = open(nrml_loss_map.replace('xml','csv'),'w')
 		for iasset in range(len(values)):
 			output_file.write(values[iasset][0]+','+str(values[iasset][1])+','+
 				str(values[iasset][2])+','+str(values[iasset][3])+'\n')

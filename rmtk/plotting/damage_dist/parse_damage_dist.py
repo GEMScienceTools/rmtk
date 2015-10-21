@@ -10,7 +10,7 @@ import numpy as np
 from lxml import etree
 from collections import OrderedDict
 
-xmlNRML='{http://openquake.org/xmlns/nrml/0.4}'
+xmlNRML='{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
 
 def parse_single_damage_dist(element):
@@ -22,7 +22,7 @@ def parse_single_damage_dist(element):
     damage_dist = {}
     for e in element.iter():
         if e.tag == '%staxonomy' % xmlNRML:
-            taxonomy = str(e.text)
+            taxonomy = str(e.text).split()[0]
         elif e.tag == '%sdamage' % xmlNRML:
             ds = e.attrib.get('ds')
             mean = float(e.attrib.get('mean'))
@@ -51,6 +51,7 @@ def parse_dmg_dist_total(element):
     return damage_states, damage_dist
 
 def parse_dmg_dist_tax(element):
+    taxo = []
     taxonomies = []
     damage_states = []
     damage_dist_tax = {}
@@ -86,7 +87,33 @@ def parse_damage_file(input_file):
             continue
     return taxonomies, damage_states, damage_dist_tax
 
-
+def save_damage_file(taxonomies,damage_states,damage_dist_tax):
+    '''
+    Saves a csv file with the damage distribution per taxonomy
+    '''
+    filename = 'Damage_dist_tax.csv'
+    mean = []
+    stdev = []
+    output = open(filename,'w')
+    
+    header1 = 'Taxonomy'
+    header2 = ' '
+    for ds in damage_states:
+        header1 = header1 + ',' + ds + ',' + ' '
+        header2 = header2 + ',' + 'mean' + ',' + 'std.dev'
+    output.write(header1 + '\n')
+    output.write(header2 + '\n')
+    
+    for tax in sorted(damage_dist_tax):
+        out_line = tax
+        for ds in damage_states:
+            mean = damage_dist_tax[tax][ds][0]
+            stdev = damage_dist_tax[tax][ds][1]
+            out_line += ',' + str(mean) + ',' + str(stdev)
+        output.write(out_line + '\n')
+    output.close()
+    
+    
 def set_up_arg_parser():
     """
     Can run as executable. To do so, set up the command line parser

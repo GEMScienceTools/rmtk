@@ -50,7 +50,7 @@ from matplotlib.colors import LogNorm, Normalize
 from rmtk.parsers.hazard_parsers import HazardCurveXMLParser
 
 
-NRML='{http://openquake.org/xmlns/nrml/0.4}'
+NRML='{http://openquake.org/xmlns/nrml/0.5}'
 GML='{http://www.opengis.net/gml}'
 
 

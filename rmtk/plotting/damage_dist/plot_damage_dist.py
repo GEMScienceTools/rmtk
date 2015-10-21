@@ -11,7 +11,7 @@ from matplotlib import pyplot
 from mpl_toolkits.mplot3d import Axes3D
 import parse_damage_dist as parsedd
 
-xmlNRML = '{http://openquake.org/xmlns/nrml/0.4}'
+xmlNRML = '{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
 
 def parse_taxonomy_file(taxonomy_file):
@@ -24,13 +24,16 @@ def parse_taxonomy_file(taxonomy_file):
     file.close()
     return taxonomy_list
 
-def plot_taxonomy_damage_dist(damage_file, taxonomy_list=[], plot_3d=False, export_png=False):
+def plot_taxonomy_damage_dist(damage_file, taxonomy_list=[], plot_no_damage=False, plot_3d=False, export_png=False):
     '''
     Plots the damage distribution for the specified taxonomies
     '''
     taxonomies, damage_states, damage_dist_tax = parsedd.parse_damage_file(damage_file)
     if taxonomy_list:
         taxonomies = taxonomy_list
+
+    if not plot_no_damage:
+        damage_states = damage_states[1:]
 
     indX = np.arange(len(damage_states))  # the x locations for the groups
     indZ = np.arange(len(taxonomies))  # the y locations for the groups
@@ -92,11 +95,14 @@ def plot_taxonomy_damage_dist(damage_file, taxonomy_list=[], plot_3d=False, expo
             pyplot.show()
             pyplot.clf()
 
-def plot_total_damage_dist(damage_file, export_png=False):
+def plot_total_damage_dist(damage_file, plot_no_damage=False, export_png=False):
     '''
     Plots the total damage distribution
     '''
     taxonomies, damage_states, damage_dist_tax = parsedd.parse_damage_file(damage_file)
+
+    if not plot_no_damage:
+        damage_states = damage_states[1:]
 
     indX = np.arange(len(damage_states))  # the x locations for the groups
     indZ = np.arange(len(taxonomies))  # the y locations for the groups
