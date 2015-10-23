@@ -78,7 +78,7 @@ def parse_elt(folder_ses,save_flag):
 			elt.append(ele)
 
 	if save_flag:
-		output_file = open(folder_ses+'.csv','w')        
+		output_file = open(folder_ses+'ELT'+'.csv','w')        
 		for subELT in elt:
 			line = ''
 			for ele in subELT:
