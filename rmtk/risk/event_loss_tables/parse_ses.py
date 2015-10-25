@@ -148,7 +148,7 @@ def parse_ses(folder_ses,save_flag):
         investigationTime = investigationTime + float(time)
 
     if save_flag:
-        output_file = open(folder_ses+'.csv','w')        
+        output_file = open(folder_ses+'_SES'+'.csv','w')        
         for subSES in ses:
             line = ''
             for ele in subSES:
