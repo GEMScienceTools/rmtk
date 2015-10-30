@@ -195,7 +195,7 @@ def estimateLossStatistics(losses,rateOfExceedance,investigationTime,total_cost,
     if len(return_periods) > 0:
         annual_rate_exc = 1.0/np.array(return_periods)
         for i in range(len(annual_rate_exc)):
-            if annual_rate_exc[i] > min(rateOfExceedance):
+            if annual_rate_exc[i] >= min(rateOfExceedance):
                 idx = find_nearest(rateOfExceedance,annual_rate_exc[i])
                 lossLevels.append(losses[idx])
                 print 'Loss for a return period of '+str(return_periods[i])+' years.'
