@@ -91,6 +91,7 @@ def parse_metadata(element):
     meta_info['quantile_value'] = element.attrib.get('quantileValue')
     meta_info['investigationTime'] = element.attrib.get('investigationTime')
     meta_info['unit'] = element.attrib.get('unit')
+    meta_info['poE'] = element.attrib.get('poE')
     meta_info['sourceModelTreePath'] = element.attrib.get('sourceModelTreePath')
     meta_info['gsimTreePath'] = element.attrib.get('gsimTreePath')
     meta_info['lossCategory'] = element.attrib.get('lossCategory')
@@ -112,7 +113,7 @@ def LossMapParser(input_file):
         else:
             continue
 
-    return values
+    return values, meta_info
 
 def aggLossMapLosses(values):
 
@@ -131,7 +132,7 @@ def parse_risk_maps(nrml_loss_map,agg_losses,save_flag):
 	'''
 	Writes the Loss map set to csv
 	'''
-	values = LossMapParser(nrml_loss_map)
+	values, meta_info = LossMapParser(nrml_loss_map)
 	agg_values = []
 	if save_flag:
 		output_file = open(nrml_loss_map.replace('xml','csv'),'w')
@@ -148,7 +149,7 @@ def parse_risk_maps(nrml_loss_map,agg_losses,save_flag):
 				agg_output_file.write(str(agg_values[0][iloc][0])+','+str(agg_values[0][iloc][1])+','+str(agg_values[1][iloc])+'\n')
 			agg_output_file.close()
 
-	return values, agg_values
+	return values, agg_values, meta_info
 
 def set_up_arg_parser():
     """
