@@ -18,12 +18,13 @@ def build_map(plotting_type,risk_map,bounding_box,log_scale,exposure_model,marke
         agg_losses = False
 
     data = parselm.parse_risk_maps(risk_map,agg_losses,export_map_to_csv)
+    meta_data = data[2]
     box = define_bounding_box(bounding_box,data[0])
 
     if plotting_type == 0 or plotting_type == 2:
         locations = np.array(data[1][0])
         losses = np.array(data[1][1])
-      	plot_single_map(locations,losses,box,log_scale,marker_size,'Aggregated losses per location',1)
+        plot_single_map(locations,losses,box,log_scale,marker_size,'Aggregated losses per location',1, meta_data)
 
     if plotting_type == 1 or plotting_type == 2:
         individualLosses = data[0]
@@ -33,9 +34,17 @@ def build_map(plotting_type,risk_map,bounding_box,log_scale,exposure_model,marke
         for i in range(len(uniqueTaxonomies)):
             locations,losses = processLosses(uniqueTaxonomies[i],idTaxonomies,individualLosses)
             lossesTaxonomies[i] = sum(losses)
+            nonzero_values = losses != 0
+            locations = locations[nonzero_values]
+            losses = losses[nonzero_values]
             if locations.shape[0] > 0:
-                plot_single_map(locations,losses,box,log_scale,marker_size,'Loss map for '+uniqueTaxonomies[i],i+2)
-	plot_pie_chart_losses(uniqueTaxonomies,lossesTaxonomies)
+                if meta_data['poE'] == 'None':
+                    title = 'Scenario loss map for ' + uniqueTaxonomies[i]
+                else:
+                    poe = str(float(meta_data['poE'])*100) + '% in ' + meta_data['investigationTime'] + ' years'
+                    title = 'Loss map ('+ poe + ') for '+uniqueTaxonomies[i]
+                plot_single_map(locations,losses,box,log_scale,marker_size,title,i+2, meta_data)
+        plot_pie_chart_losses(uniqueTaxonomies,lossesTaxonomies)
 
 def plot_pie_chart_losses(uniqueTaxonomies,lossesTaxonomies):
 
@@ -80,7 +89,7 @@ def define_bounding_box(bounding_box,data):
 
     return box
 
-def plot_single_map(locations,losses,box,log_scale,marker_size,title,figNo):
+def plot_single_map(locations,losses,box,log_scale,marker_size,title,figNo,meta_data):
 
     plt.figure(figNo, figsize=(8, 6), dpi=80, facecolor='w', edgecolor='k')
     map = Basemap(llcrnrlon=box["lon_1"],llcrnrlat=box["lat_1"],
@@ -101,7 +110,7 @@ def plot_single_map(locations,losses,box,log_scale,marker_size,title,figNo):
     plt.scatter(x,y,s=marker_size,c=losses,zorder=4,cmap='bwr',edgecolor='None',norm = scale)
     if locations.shape[0] > 1:
         cbar = map.colorbar(location='right',pad="5%")
-        cbar.set_label('EUR')
+        cbar.set_label(meta_data['unit'])
 
     if box["lat_length"] < 2:
         parallels = np.arange(0.,81,0.25)
