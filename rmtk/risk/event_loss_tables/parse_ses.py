@@ -94,12 +94,14 @@ def parseMeshRupture(element):
             lat.append(float(e.attrib.get('lat')))
             depth.append(float(e.attrib.get('depth')))
 
-    topLeft = [np.mean(lon),np.mean(lat),np.mean(depth)]
-    topRight = [np.mean(lon),np.mean(lat),np.mean(depth)]
-    bottomLeft = [np.mean(lon),np.mean(lat),np.mean(depth)]
-    bottomRight = [np.mean(lon),np.mean(lat),np.mean(depth)]
+    left = np.argmin(lon)
+    right = np.argmax(lon)
+    
+    topLeft = [lon[left],lat[left],np.max(depth)]
+    topRight = [lon[right],lat[right],np.max(depth)]
+    bottomLeft = [lon[left],lat[left],np.min(depth)]
+    bottomRight = [lon[right],lat[right],np.min(depth)]
     return topLeft, topRight, bottomLeft, bottomRight
-
 
 def parse_ses_single_file(singleFile):
 
@@ -128,6 +130,10 @@ def parse_ses_single_file(singleFile):
                                 if geometry.tag == '%splanarSurface' % xmlNRML:
                                     planarSurface = geometry
                                     topLeft, topRight, bottomLeft, bottomRight = parsePlanarSurface(planarSurface) 
+                                if geometry.tag == '%smesh' % xmlNRML:
+                                    mesh = geometry
+                                    topLeft, topRight, bottomLeft, bottomRight = parseMeshRupture(mesh) 
+                                    
                             ses.append([rupId,mag,strike,dip,rake,tectonicRegion,topLeft[0],topLeft[1],topLeft[2],topRight[0],topRight[1],topRight[2],bottomLeft[0],bottomLeft[1],bottomLeft[2],bottomRight[0],bottomRight[1],bottomRight[2]]) 
 
     return investigationTime, ses
@@ -152,12 +158,10 @@ def parse_ses(folder_ses,save_flag):
         for subSES in ses:
             line = ''
             for ele in subSES:
-                line = line+ele+','
+                line = line+str(ele)+','
             output_file.write(line[0:-1]+'\n')
         output_file.close()
-    
-    print investigationTime
-    
+        
     return investigationTime, np.array(ses)
 
 def set_up_arg_parser():
