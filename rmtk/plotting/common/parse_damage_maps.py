@@ -48,7 +48,6 @@ Post-process damage calculation data to convert damage maps into different
 formats
 '''
 
-import os
 import argparse
 from lxml import etree
 import pandas as pd
@@ -116,6 +115,7 @@ def parse_damage_maps(nrml_damage_map, agg_damages, save_flag):
         output_file = nrml_damage_map.replace('xml', 'csv')
         df_values.to_csv(output_file, index=False)
 
+    agg_values = None
     if agg_damages:
         agg_values = agg_damage_map(df_values)
         if save_flag:
