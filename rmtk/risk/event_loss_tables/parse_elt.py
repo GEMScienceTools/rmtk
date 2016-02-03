@@ -14,7 +14,7 @@
 # along with OpenQuake. If not, see <http://www.gnu.org/licenses/>
 #
 # DISCLAIMER
-# 
+#
 # The software Risk Modellers Toolkit (rmtk) provided herein
 # is released as a prototype implementation on behalf of
 # scientists and engineers working within the GEM Foundation (Global
@@ -45,48 +45,50 @@
 # -*- coding: utf-8 -*-
 '''
 Parse a number of event loss tables and stored all the losses
-in a single csv file 
+in a single csv file
 '''
 
 import os
 import argparse
 import numpy as np
 
+
 def parse_single_elt(singleELT):
 
-	elt = []
+    elt = []
 
-	file = open(singleELT)
-	lines = file.readlines()
-	for line in lines: 
-		elt.append(line.strip().strip().split(','))
-	
-	del elt[0]
-	return elt
+    file = open(singleELT)
+    lines = file.readlines()
+    for line in lines:
+        elt.append(line.strip().strip().split(','))
 
-def parse_elt(folder_ses,save_flag):
-	'''
-	Writes the evebt loss tables to csv
-	'''
-	elt = []
+    del elt[0]
+    return elt
 
-	elt_files = [x for x in os.listdir(folder_ses) if x[-4:] == '.csv']
 
-	for singleFile in elt_files:
-		subELT = parse_single_elt(folder_ses+'/'+singleFile)
-		for ele in subELT:
-			elt.append(ele)
+def parse_elt(folder_ses, save_flag):
+    '''
+    Writes the evebt loss tables to csv
+    '''
+    elt = []
 
-	if save_flag:
-		output_file = open(folder_ses+'_ELT'+'.csv','w')        
-		for subELT in elt:
-			line = ''
-			for ele in subELT:
-				line = line+ele+','
-			output_file.write(line[0:-1]+'\n')
-		output_file.close()
+    elt_files = [x for x in os.listdir(folder_ses) if x[-4:] == '.csv' and 'agg_losses' in x]
 
-	return np.array(elt)
+    for singleFile in elt_files:
+        subELT = parse_single_elt(folder_ses+'/'+singleFile)
+        for ele in subELT:
+            elt.append(ele)
+
+    if save_flag:
+        output_file = open(folder_ses+'_ELT'+'.csv','w')
+        for subELT in elt:
+            line = ''
+            for ele in subELT:
+                line = line+ele+','
+            output_file.write(line[0:-1]+'\n')
+        output_file.close()
+
+    return np.array(elt)
 
 def set_up_arg_parser():
     """
@@ -98,7 +100,7 @@ def set_up_arg_parser():
             'files for each stochastic event set.'
             'To run just type: python parse_ses.py '
             '--input-folder=PATH_TO_FOLDER_WITH_SES '
-			'include --save if you wish to save ses into csv format' , add_help=False)
+            'include --save if you wish to save ses into csv format' , add_help=False)
     flags = parser.add_argument_group('flag arguments')
     flags = parser.add_argument_group('flag arguments')
     flags.add_argument('-h', '--help', action='help')

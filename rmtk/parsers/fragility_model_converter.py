@@ -43,69 +43,88 @@ Convert fragility model csv files to xml.
 """
 
 import os
-import csv
+import ConfigParser
 import argparse
 import pandas as pd
 from lxml import etree
 
-NAMESPACE = 'http://openquake.org/xmlns/nrml/0.4'
+NAMESPACE = 'http://openquake.org/xmlns/nrml/0.5'
 GML_NAMESPACE = 'http://www.opengis.net/gml'
 SERIALIZE_NS_MAP = {None: NAMESPACE, 'gml': GML_NAMESPACE}
+
 
 def csv_to_xml(input_csv, metadata_csv, output_xml):
     """
     Converts the CSV fragility model file to the NRML format
     """
-    metadata = {}
-    with open(metadata_csv, 'rU') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            metadata[row[0]] = row[1]
-    metadata['limitStates'] = metadata['limitStates'].split('; ')
+
+    conf = ConfigParser.ConfigParser()
+    conf.read(metadata_csv)
+    metadata = conf._sections
+    metadata['main']['limit_states'] = metadata['main']['limit_states'].split(', ')
 
     data = pd.io.parsers.read_csv(input_csv)
     grouped_by_tax = data.groupby('taxonomy')
-    frag_model = {}
+    frag_function = dict()
 
     for taxonomy, group in grouped_by_tax:
-        frag_model[taxonomy] = {}
-        frag_model[taxonomy]['noDamageLimit'] = str(group['noDamageLimit'].tolist()[0])
-        frag_model[taxonomy]['iml_unit'] = group['iml_unit'].tolist()[0]
-        frag_model[taxonomy]['imt'] = group['imt'].tolist()[0]
-        frag_model[taxonomy]['iml'] = group['iml'].tolist()
 
-        frag_func = {}
-        for ls in metadata['limitStates']:
-            frag_func[ls] = group[ls].tolist()
+        if metadata[taxonomy]['format'] == 'continuous':
+            for line in group.to_dict('records'):
+                ds = line['iml']
+                sd_ = line[metadata['main']['limit_states'][1]]
+                mean_ = line[metadata['main']['limit_states'][0]]
+                frag_function.setdefault(taxonomy, {})[ds] = (mean_, sd_)
 
-        frag_model[taxonomy]['function'] = frag_func
+        elif metadata[taxonomy]['format'] == 'discrete':
+            frag_function[taxonomy] = group.to_dict('list')
 
         with open(output_xml, "w") as f:
             root = etree.Element('nrml', nsmap=SERIALIZE_NS_MAP)
             node_fm = etree.SubElement(root, "fragilityModel")
+            node_fm.set("id", metadata['main']['id'])
+            node_fm.set("assetCategory", metadata['main']['asset_category'])
+            node_fm.set("lossCategory", metadata['main']['loss_category'])
+
             node_desc = etree.SubElement(node_fm, "description")
-            node_desc.text = metadata['description']
+            node_desc.text = metadata['main']['description']
             node_ls = etree.SubElement(node_fm, "limitStates")
-            node_ls.text = " ".join(map(str, metadata['limitStates']))
+            node_ls.text = " ".join(map(str, metadata['main']['limit_states']))
 
-            for taxonomy, frag_func_set in frag_model.iteritems():
-                node_ffs = etree.SubElement(node_fm, "ffs")
-                node_ffs.set("noDamageLimit", frag_func_set['noDamageLimit'])
-                node_tax = etree.SubElement(node_ffs, "taxonomy")
-                node_tax.text = taxonomy
-                node_iml = etree.SubElement(node_ffs, "IML")
-                node_iml.set("IMT", frag_func_set['imt'])
-                node_iml.set("iml_unit", frag_func_set['iml_unit'])
-                node_iml.text = " ".join(map(str, frag_func_set['iml']))
+            for taxonomy, value in frag_function.iteritems():
 
-                frag_func = frag_func_set['function']
-                for ls in metadata['limitStates']:
-                    node_ffd = etree.SubElement(node_ffs, "ffd")
-                    node_ffd.set("ls", ls)
-                    node_poes = etree.SubElement(node_ffd, "poEs")
-                    node_poes.text = " ".join(map(str, frag_func[ls]))
+                node_ffs = etree.SubElement(node_fm, "fragilityFunction")
+                node_ffs.set("id", taxonomy)
+                node_ffs.set("format", metadata[taxonomy]['format'])
+
+                if metadata[taxonomy]['format'] == 'continuous':
+                    node_ffs.set("shape", metadata[taxonomy]['shape'])
+                    node_imls = etree.SubElement(node_ffs, "imls")
+                    node_imls.set("imt", metadata[taxonomy]['imt'])
+                    node_imls.set("noDamageLimit", metadata[taxonomy]['nodamage_limit'])
+                    node_imls.set("minIML", metadata[taxonomy]['miniml'])
+                    node_imls.set("maxIML", metadata[taxonomy]['maximl'])
+
+                    for limit_state in metadata['main']['limit_states']:
+                        node_params = etree.SubElement(node_ffs, "params")
+                        node_params.set("ls", limit_state)
+                        node_params.set("mean", str(value[limit_state][0]))
+                        node_params.set("stddev", str(value[limit_state][1]))
+
+                elif metadata[taxonomy]['format'] == 'discrete':
+
+                    node_imls = etree.SubElement(node_ffs, "imls")
+                    node_imls.set("imt", metadata[taxonomy]['imt'])
+                    node_imls.set("noDamageLimit", metadata[taxonomy]['nodamage_limit'])
+                    node_imls.text = " ".join(value['iml'])
+
+                    for limit_state in metadata['main']['limit_states']:
+                        node_poes = etree.SubElement(node_ffs, "poes")
+                        node_poes.set("ls", limit_state)
+                        node_poes.text = " ".join(map(str, value[limit_state]))
 
             f.write(etree.tostring(root, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
+
 
 def xml_to_csv (input_xml, output_csv):
     """

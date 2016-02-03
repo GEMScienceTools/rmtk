@@ -1,0 +1,43 @@
+[main]
+id: HAZUS_High_Code
+asset_category: building
+loss_category: structural
+description: dummy Fragility Functions for High Code Structures
+limit_states: slight, moderate, extreme, complete
+
+[W]
+format: discrete
+imt: PGA
+nodamage_limit: 0.01
+
+[RC]
+format: continuous
+shape: logncdf
+imt: PGA
+nodamage_limit: 0.05
+miniml: 0.0
+maximl: 1.0
+
+[UFB]
+format: continuous
+shape: logncdf
+imt: PGA
+nodamage_limit: 0.05
+miniml: 0.0
+maximl: 1.0
+
+[A]
+format: continuous
+shape: logncdf
+imt: PGA
+nodamage_limit: 0.05
+miniml: 0.0
+maximl: 1.0
+
+[DS]
+format: continuous
+shape: logncdf
+imt: PGA
+nodamage_limit: 0.05
+miniml: 0.0
+maximl: 1.0

@@ -1,1 +1,9 @@
-format,discretedescription,HAZUS Fragility Functions for High Code StructureslimitStates,Slight; Moderate; Extreme; Complete
+[main]
+fragility model id: HAZUS_High_Code
+asset category: building
+loss category: structural
+description: HAZUS Fragility Functions for High Code Structures
+limitStates: Slight, Moderate, Extreme, Complete
+
+[discrete]
+function_id: aaa

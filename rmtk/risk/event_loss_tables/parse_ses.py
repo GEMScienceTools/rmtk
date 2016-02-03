@@ -14,7 +14,7 @@
 # along with OpenQuake. If not, see <http://www.gnu.org/licenses/>
 #
 # DISCLAIMER
-# 
+#
 # The software Risk Modellers Toolkit (rmtk) provided herein
 # is released as a prototype implementation on behalf of
 # scientists and engineers working within the GEM Foundation (Global
@@ -44,18 +44,17 @@
 # liability for use of the software.
 # -*- coding: utf-8 -*-
 '''
-Parse a number of SES stored in NRML and store them in CSV 
+Parse a number of SES stored in NRML and store them in CSV
 '''
 
 import os
-import csv
 import argparse
 import numpy as np
 from lxml import etree
-from collections import OrderedDict
 
-xmlNRML='{http://openquake.org/xmlns/nrml/0.5}'
+xmlNRML = '{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
+
 
 def parsePlanarSurface(element):
     '''
@@ -66,17 +65,18 @@ def parsePlanarSurface(element):
     bottomLeft = 0
     bottomRight = 0
 
-    for e in element.iter(): 
+    for e in element.iter():
         if e.tag == '%stopLeft' % xmlNRML:
-            topLeft = [e.attrib.get('lon'),e.attrib.get('lat'),e.attrib.get('depth')]
+            topLeft = [e.attrib.get('lon'), e.attrib.get('lat'), e.attrib.get('depth')]
         elif e.tag == '%stopRight' % xmlNRML:
-            topRight = [e.attrib.get('lon'),e.attrib.get('lat'),e.attrib.get('depth')]
+            topRight = [e.attrib.get('lon'), e.attrib.get('lat'), e.attrib.get('depth')]
         elif e.tag == '%sbottomLeft' % xmlNRML:
-            bottomLeft = [e.attrib.get('lon'),e.attrib.get('lat'),e.attrib.get('depth')]
+            bottomLeft = [e.attrib.get('lon'), e.attrib.get('lat'), e.attrib.get('depth')]
         elif e.tag == '%sbottomRight' % xmlNRML:
-            bottomRight = [e.attrib.get('lon'),e.attrib.get('lat'),e.attrib.get('depth')]
-            
+            bottomRight = [e.attrib.get('lon'), e.attrib.get('lat'), e.attrib.get('depth')]
+
     return topLeft, topRight, bottomLeft, bottomRight
+
 
 def parseMeshRupture(element):
     '''
@@ -87,8 +87,8 @@ def parseMeshRupture(element):
     lat = []
     depth = []
 
-    for e in element.iter(): 
-        
+    for e in element.iter():
+
         if e.tag == '%snode' % xmlNRML:
             lon.append(float(e.attrib.get('lon')))
             lat.append(float(e.attrib.get('lat')))
@@ -96,12 +96,13 @@ def parseMeshRupture(element):
 
     left = np.argmin(lon)
     right = np.argmax(lon)
-    
+
     topLeft = [lon[left],lat[left],np.max(depth)]
     topRight = [lon[right],lat[right],np.max(depth)]
     bottomLeft = [lon[left],lat[left],np.min(depth)]
     bottomRight = [lon[right],lat[right],np.min(depth)]
     return topLeft, topRight, bottomLeft, bottomRight
+
 
 def parse_ses_single_file(singleFile):
 
@@ -110,13 +111,13 @@ def parse_ses_single_file(singleFile):
 
     for _, element in etree.iterparse(singleFile):
 #        print element.tag
-        
+
         if element.tag == '%sstochasticEventSetCollection' % xmlNRML:
             SESColletion = element
             for subElement in SESColletion.iter():
                 if subElement.tag == '%sstochasticEventSet' % xmlNRML:
                     SESSet = subElement
-                    investigationTime = investigationTime + float(SESSet.attrib.get('investigationTime'))
+                    investigationTime += float(SESSet.attrib.get('investigationTime'))
                     for subSubElement in SESSet.iter():
                         if subSubElement.tag == '%srupture' % xmlNRML:
                             rupture = subSubElement
@@ -129,39 +130,57 @@ def parse_ses_single_file(singleFile):
                             for geometry in rupture:
                                 if geometry.tag == '%splanarSurface' % xmlNRML:
                                     planarSurface = geometry
-                                    topLeft, topRight, bottomLeft, bottomRight = parsePlanarSurface(planarSurface) 
+                                    topLeft, topRight, bottomLeft, bottomRight = parsePlanarSurface(planarSurface)
                                 if geometry.tag == '%smesh' % xmlNRML:
                                     mesh = geometry
-                                    topLeft, topRight, bottomLeft, bottomRight = parseMeshRupture(mesh) 
-                                    
-                            ses.append([rupId,mag,strike,dip,rake,tectonicRegion,topLeft[0],topLeft[1],topLeft[2],topRight[0],topRight[1],topRight[2],bottomLeft[0],bottomLeft[1],bottomLeft[2],bottomRight[0],bottomRight[1],bottomRight[2]]) 
+                                    topLeft, topRight, bottomLeft, bottomRight = parseMeshRupture(mesh)
+
+                            ses.append([rupId,
+                                        mag,
+                                        strike,
+                                        dip,
+                                        rake,
+                                        tectonicRegion,
+                                        topLeft[0],
+                                        topLeft[1],
+                                        topLeft[2],
+                                        topRight[0],
+                                        topRight[1],
+                                        topRight[2],
+                                        bottomLeft[0],
+                                        bottomLeft[1],
+                                        bottomLeft[2],
+                                        bottomRight[0],
+                                        bottomRight[1],
+                                        bottomRight[2]])
 
     return investigationTime, ses
-    
-def parse_ses(folder_ses,save_flag):
+
+
+def parse_ses(folder_ses, save_flag):
     '''
     Writes the ses to csv
     '''
     ses = []
     investigationTime = 0.0
 
-    ses_files = [x for x in os.listdir(folder_ses) if x[-4:] == '.xml']
-    
+    ses_files = [x for x in os.listdir(folder_ses) if x[-4:] == '.xml' and 'ses' in x]
+
     for singleFile in ses_files:
         time, subSetSES = parse_ses_single_file(folder_ses+'/'+singleFile)
         for setSES in subSetSES:
             ses.append(setSES)
-        investigationTime = investigationTime + float(time)
+        investigationTime += float(time)
 
     if save_flag:
-        output_file = open(folder_ses+'_SES'+'.csv','w')        
+        output_file = open(folder_ses+'_SES'+'.csv', 'w')
         for subSES in ses:
             line = ''
             for ele in subSES:
                 line = line+str(ele)+','
             output_file.write(line[0:-1]+'\n')
         output_file.close()
-        
+
     return investigationTime, np.array(ses)
 
 def set_up_arg_parser():
