@@ -3,13 +3,6 @@
   <fragilityModel id="HAZUS_High_Code" assetCategory="building" lossCategory="structural">
     <description>dummy Fragility Functions for High Code Structures</description>
     <limitStates>slight moderate extreme complete</limitStates>
-    <fragilityFunction id="A" format="continuous" shape="logncdf">
-      <imls imt="PGA" noDamageLimit="0.05" minIML="0.0" maxIML="1.0"/>
-      <params ls="slight" mean="0.5" stddev="0.1"/>
-      <params ls="moderate" mean="1.0" stddev="0.1"/>
-      <params ls="extreme" mean="1.5" stddev="0.1"/>
-      <params ls="complete" mean="2.0" stddev="0.1"/>
-    </fragilityFunction>
     <fragilityFunction id="UFB" format="continuous" shape="logncdf">
       <imls imt="PGA" noDamageLimit="0.05" minIML="0.0" maxIML="1.0"/>
       <params ls="slight" mean="0.5" stddev="0.1"/>
@@ -17,15 +10,15 @@
       <params ls="extreme" mean="1.5" stddev="0.1"/>
       <params ls="complete" mean="2.0" stddev="0.1"/>
     </fragilityFunction>
-    <fragilityFunction id="DS" format="continuous" shape="logncdf">
-      <imls imt="PGA" noDamageLimit="0.05" minIML="0.0" maxIML="1.0"/>
-      <params ls="slight" mean="0.5" stddev="0.1"/>
-      <params ls="moderate" mean="1.0" stddev="0.1"/>
-      <params ls="extreme" mean="1.5" stddev="0.1"/>
-      <params ls="complete" mean="2.0" stddev="0.1"/>
+    <fragilityFunction id="W2" format="discrete">
+      <imls imt="PGA" noDamageLimit="0.01">0.01 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1.0</imls>
+      <poes ls="slight">1.783e-07 0.0049971 0.06772 0.19505 0.34092 0.47557 0.58846 0.67884 0.74956 0.80431 0.84655 0.87914 0.90433 0.92389 0.93913 0.95107 0.96047 0.96791 0.97382 0.97855 0.98235</poes>
+      <poes ls="moderate">1.5913e-10 8.0047e-05 0.0035531 0.019781 0.053832 0.10381 0.16472 0.23136 0.29954 0.36629 0.42972 0.48877 0.54292 0.59207 0.63633 0.67597 0.71134 0.74281 0.77076 0.79555 0.81752</poes>
+      <poes ls="extreme">6.1293e-14 4.8111e-07 6.777e-05 0.00072972 0.0031368 0.008552 0.017883 0.031533 0.049463 0.071318 0.096557 0.12456 0.15469 0.18634 0.21897 0.2521 0.28534 0.31835 0.35086 0.38265 0.41357</poes>
+      <poes ls="complete">3.7176e-17 2.853e-09 1.0575e-06 1.9905e-05 0.00012657 0.0004658 0.001241 0.0026791 0.0049971 0.0083786 0.012961 0.018834 0.026039 0.034576 0.044412 0.055487 0.06772 0.081017 0.095276 0.11039 0.12624</poes>
     </fragilityFunction>
     <fragilityFunction id="W" format="discrete">
-      <imls imt="PGA" noDamageLimit="0.01">0.01 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1</imls>
+      <imls imt="PGA" noDamageLimit="0.01">0.01 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1.0</imls>
       <poes ls="slight">1.78e-07 0.0049971 0.06772 0.19505 0.34092 0.47557 0.58846 0.67884 0.74956 0.80431 0.84655 0.87914 0.90433 0.92389 0.93913 0.95107 0.96047 0.96791 0.97382 0.97855 0.98235</poes>
       <poes ls="moderate">1.91e-10 8.9584e-05 0.0038647 0.021172 0.056982 0.10898 0.1718 0.24002 0.30939 0.37693 0.44081 0.5 0.55407 0.60296 0.64684 0.68603 0.72088 0.75181 0.7792 0.80344 0.82488</poes>
       <poes ls="extreme">1.71e-14 2.03e-07 3.3953e-05 0.0004041 0.001863 0.0053583 0.011697 0.021379 0.034576 0.051194 0.070949 0.093444 0.11823 0.14484 0.17283 0.2018 0.23136 0.2612 0.29104 0.32066 0.34985</poes>

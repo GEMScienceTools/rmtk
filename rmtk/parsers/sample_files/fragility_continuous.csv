@@ -1,0 +1,17 @@
+taxonomy,damagestate,mean,stddev
+UFB,slight,0.5,0.1
+UFB,moderate,1.0,0.1
+UFB,extreme,1.5,0.1
+UFB,complete,2.0,0.1
+RC,slight,0.5,0.1
+RC,moderate,1.0,0.1
+RC,extreme,1.5,0.1
+RC,complete,2.0,0.1
+A,slight,0.5,0.1
+A,moderate,1.0,0.1
+A,extreme,1.5,0.1
+A,complete,2.0,0.1
+DS,slight,0.5,0.1
+DS,moderate,1.0,0.1
+DS,extreme,1.5,0.1
+DS,complete,2.0,0.1

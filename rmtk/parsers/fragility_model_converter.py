@@ -53,77 +53,93 @@ GML_NAMESPACE = 'http://www.opengis.net/gml'
 SERIALIZE_NS_MAP = {None: NAMESPACE, 'gml': GML_NAMESPACE}
 
 
-def csv_to_xml(input_csv, metadata_csv, output_xml):
+def csv_to_xml(metadata_txt, output_xml):
     """
     Converts the CSV fragility model file to the NRML format
     """
 
     conf = ConfigParser.ConfigParser()
-    conf.read(metadata_csv)
+    conf.read(metadata_txt)
     metadata = conf._sections
     metadata['main']['limit_states'] = metadata['main']['limit_states'].split(', ')
 
-    data = pd.io.parsers.read_csv(input_csv)
-    grouped_by_tax = data.groupby('taxonomy')
     frag_function = dict()
 
-    for taxonomy, group in grouped_by_tax:
+    if metadata['main']['file_discrete']:
+        metadata['main']['file_discrete'] = os.path.abspath(
+            os.path.join(os.path.abspath(metadata_txt),
+                         os.pardir,
+                         metadata['main']['file_discrete']))
+        try:
+            data_discrete = pd.read_csv(metadata['main']['file_discrete'])
+        except IOError:
+            print '{} does not exist'.format(metadata['main']['file_discrete'])
 
-        if metadata[taxonomy]['format'] == 'continuous':
-            for line in group.to_dict('records'):
-                ds = line['iml']
-                sd_ = line[metadata['main']['limit_states'][1]]
-                mean_ = line[metadata['main']['limit_states'][0]]
-                frag_function.setdefault(taxonomy, {})[ds] = (mean_, sd_)
+        for taxonomy, group in data_discrete.groupby('taxonomy'):
+            if taxonomy in metadata:
+                frag_function[taxonomy] = group.to_dict('list')
 
-        elif metadata[taxonomy]['format'] == 'discrete':
-            frag_function[taxonomy] = group.to_dict('list')
+    if metadata['main']['file_continuous']:
+        metadata['main']['file_continuous'] = os.path.abspath(
+            os.path.join(os.path.abspath(metadata_txt),
+                         os.pardir,
+                         metadata['main']['file_continuous']))
+        try:
+            data_continuous = pd.read_csv(metadata['main']['file_continuous'])
+        except IOError:
+            print '{} does not exist'.format(metadata['main']['file_continuous'])
 
-        with open(output_xml, "w") as f:
-            root = etree.Element('nrml', nsmap=SERIALIZE_NS_MAP)
-            node_fm = etree.SubElement(root, "fragilityModel")
-            node_fm.set("id", metadata['main']['id'])
-            node_fm.set("assetCategory", metadata['main']['asset_category'])
-            node_fm.set("lossCategory", metadata['main']['loss_category'])
+        for taxonomy, group in data_continuous.groupby('taxonomy'):
+            if taxonomy in metadata:
+                for line in group.iterrows():
+                    frag_function.setdefault(taxonomy, {})[line[1]['damagestate']] = (
+                        line[1]['mean'], line[1]['stddev'])
 
-            node_desc = etree.SubElement(node_fm, "description")
-            node_desc.text = metadata['main']['description']
-            node_ls = etree.SubElement(node_fm, "limitStates")
-            node_ls.text = " ".join(map(str, metadata['main']['limit_states']))
+    with open(output_xml, "w") as f:
+        root = etree.Element('nrml', nsmap=SERIALIZE_NS_MAP)
+        node_fm = etree.SubElement(root, "fragilityModel")
+        node_fm.set("id", metadata['main']['id'])
+        node_fm.set("assetCategory", metadata['main']['asset_category'])
+        node_fm.set("lossCategory", metadata['main']['loss_category'])
 
-            for taxonomy, value in frag_function.iteritems():
+        node_desc = etree.SubElement(node_fm, "description")
+        node_desc.text = metadata['main']['description']
+        node_ls = etree.SubElement(node_fm, "limitStates")
+        node_ls.text = " ".join(map(str, metadata['main']['limit_states']))
 
-                node_ffs = etree.SubElement(node_fm, "fragilityFunction")
-                node_ffs.set("id", taxonomy)
-                node_ffs.set("format", metadata[taxonomy]['format'])
+        for taxonomy, value in frag_function.iteritems():
 
-                if metadata[taxonomy]['format'] == 'continuous':
-                    node_ffs.set("shape", metadata[taxonomy]['shape'])
-                    node_imls = etree.SubElement(node_ffs, "imls")
-                    node_imls.set("imt", metadata[taxonomy]['imt'])
-                    node_imls.set("noDamageLimit", metadata[taxonomy]['nodamage_limit'])
-                    node_imls.set("minIML", metadata[taxonomy]['miniml'])
-                    node_imls.set("maxIML", metadata[taxonomy]['maximl'])
+            node_ffs = etree.SubElement(node_fm, "fragilityFunction")
+            node_ffs.set("id", taxonomy)
+            node_ffs.set("format", metadata[taxonomy]['format'])
 
-                    for limit_state in metadata['main']['limit_states']:
-                        node_params = etree.SubElement(node_ffs, "params")
-                        node_params.set("ls", limit_state)
-                        node_params.set("mean", str(value[limit_state][0]))
-                        node_params.set("stddev", str(value[limit_state][1]))
+            if metadata[taxonomy]['format'] == 'continuous':
+                node_ffs.set("shape", metadata[taxonomy]['shape'])
+                node_imls = etree.SubElement(node_ffs, "imls")
+                node_imls.set("imt", metadata[taxonomy]['imt'])
+                node_imls.set("noDamageLimit", metadata[taxonomy]['nodamage_limit'])
+                node_imls.set("minIML", metadata[taxonomy]['miniml'])
+                node_imls.set("maxIML", metadata[taxonomy]['maximl'])
 
-                elif metadata[taxonomy]['format'] == 'discrete':
+                for limit_state in metadata['main']['limit_states']:
+                    node_params = etree.SubElement(node_ffs, "params")
+                    node_params.set("ls", limit_state)
+                    node_params.set("mean", str(value[limit_state][0]))
+                    node_params.set("stddev", str(value[limit_state][1]))
 
-                    node_imls = etree.SubElement(node_ffs, "imls")
-                    node_imls.set("imt", metadata[taxonomy]['imt'])
-                    node_imls.set("noDamageLimit", metadata[taxonomy]['nodamage_limit'])
-                    node_imls.text = " ".join(value['iml'])
+            elif metadata[taxonomy]['format'] == 'discrete':
 
-                    for limit_state in metadata['main']['limit_states']:
-                        node_poes = etree.SubElement(node_ffs, "poes")
-                        node_poes.set("ls", limit_state)
-                        node_poes.text = " ".join(map(str, value[limit_state]))
+                node_imls = etree.SubElement(node_ffs, "imls")
+                node_imls.set("imt", metadata[taxonomy]['imt'])
+                node_imls.set("noDamageLimit", metadata[taxonomy]['nodamage_limit'])
+                node_imls.text = " ".join(map(str, value['iml']))
 
-            f.write(etree.tostring(root, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
+                for limit_state in metadata['main']['limit_states']:
+                    node_poes = etree.SubElement(node_ffs, "poes")
+                    node_poes.set("ls", limit_state)
+                    node_poes.text = " ".join(map(str, value[limit_state]))
+
+        f.write(etree.tostring(root, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
 
 
 def xml_to_csv (input_xml, output_csv):
@@ -141,8 +157,7 @@ def set_up_arg_parser():
     description = ('Convert a Fragility Model from CSV to XML and '
                    'vice versa.\n\nTo convert from CSV to XML: '
                    '\npython fragility_model_converter.py '
-                   '--input-csv-file PATH_TO_FRAGILITY_MODEL_CSV_FILE '
-                   '--metadata-csv-file PATH_TO_FRAGILITY_METADATA_CSV_FILE '
+                   '--metadata-txt-file PATH_TO_FRAGILITY_METADATA_TXT_FILE '
                    '--output-xml-file PATH_TO_OUTPUT_XML_FILE'
                    '\n\nTo convert from XML to CSV type: '
                    '\npython fragility_model_converter.py '
@@ -155,21 +170,17 @@ def set_up_arg_parser():
     group_input = flags.add_argument_group('input files')
     group_input_choice = group_input.add_mutually_exclusive_group(required=True)
     group_input_choice.add_argument('--input-xml-file',
-                       help='path to fragility model XML file',
-                       default=None)
-    group_input_choice.add_argument('--input-csv-file',
-                       help='path to fragility model CSV file',
-                       default=None)
-    group_input.add_argument('--metadata-csv-file',
-                       help='path to fragility metadata CSV file',
-                       default=None,
-                       required=True)
+                                    help='path to fragility model XML file',
+                                    default=None)
+    group_input_choice.add_argument('--metadata-txt-file',
+                                    help='path to fragility metadata TXT file',
+                                    default=None)
 
     group_output = flags.add_argument_group('output files')
     group_output.add_argument('--output-xml-file',
                               help='path to output XML file',
                               default=None,
-                              required=False)
+                              required=True)
     return parser
 
 
@@ -177,13 +188,8 @@ if __name__ == "__main__":
 
     parser = set_up_arg_parser()
     args = parser.parse_args()
-    if args.input_csv_file:
-        if args.output_xml_file:
-            output_file = args.output_xml_file
-        else:
-            (filename, ext) = os.path.splitext(args.input_csv_file)
-            output_file = filename + '.xml'
-        csv_to_xml(args.input_csv_file, args.metadata_csv_file, output_file)
+    if args.metadata_txt_file:
+        csv_to_xml(args.metadata_txt_file, args.output_xml_file)
     elif args.input_xml_file:
         if args.output_csv_file:
             output_file = args.output_csv_file
