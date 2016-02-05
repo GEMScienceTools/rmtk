@@ -1,0 +1,47 @@
+[main]
+id: exp_mod_1
+category: buildings
+taxonomy_source: GEM Taxonomy
+description: Exposure model for Nepal
+# location of exposure csv file relative to this file
+csv_file: ./exposure_model.csv
+
+[cost]
+# multiple choices from structural, nonstructural, contents, business_interruption
+cost_name: structural, nonstructural, contents, business_interruption
+# choice from aggregated, per_building, per_area for each of the cost_name
+cost_type: per_building, per_building, per_building, aggregated
+# any string for each of the cost_name
+cost_unit: EUR, EUR, EUR, EUR/month
+
+[insurance]
+# choose from true, false, or None
+limit_absolute: false
+deductible_absolute: false
+
+# only required if any cost_type is per_area
+[area]
+# choice from aggregated and per_asset
+area_type: per_asset
+area_unit: square metres
+
+[occupants]
+# multiple choices from day, night, transit
+period: day, transit, night
+
+[mapping]
+# column name in the csv file
+id: asset_id
+lon: longitude
+lat: latitude
+taxonomy: taxonomy
+# area is only required if any cost_type is per_area
+number: num_buildings
+area: built_up_area
+# should be in the order of occupants
+occupants: day_occupants, transit_occupants, night_occupants
+# should be in ther oder of cost type
+cost: structural_replacement_cost, nonstructural_replacement_cost, contents_replacement_cost, downtime_cost
+deductible: structural_insurance_deductible, nonstructural_insurance_deductible, contents_insurance_deductible, downtime_insurance_deductible
+insurance_limit: structural_insurance_limit, nonstructural_insurance_limit, contents_insurance_limit, downtime_insurance_limit 
+retrofit: structural_retrofit_cost, nonstructural_retrofit_cost, contents_retrofit_cost, None
