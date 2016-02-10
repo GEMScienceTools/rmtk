@@ -206,7 +206,7 @@ class FragilityFunction(object):
 
     def plot_fragility(self, im_range):
 
-        self.est_poes = self.compute_poes(im_range)
+        self.compute_poes(im_range)
 
         plt.figure()
         for state in self.metadata['limit_states']:
@@ -219,21 +219,18 @@ class FragilityFunction(object):
 
     def compute_poes(self, im_range):
 
+        self.est_poes = dict()
         if self.frag_format == 'continuous':
-            est_poes = dict()
             for state, (mean_, std_) in self.params.iteritems():
                 values = lognorm.cdf(im_range, std_, scale=mean_)
                 values[im_range <= self.noDamageLimit] = 0.0
-                est_poes[state] = values
+                self.est_poes[state] = values
         else:
-            est_poes = dict()
             for state, poe_values in self.poes.iteritems():
                 values = np.interp(im_range, self.iml, poe_values,
                                    left=0.0, right=1.0)
                 values[im_range <= self.noDamageLimit] = 0.0
-                est_poes[state] = values
-
-        return est_poes
+                self.est_poes[state] = values
 
     def continuousfragilityModelParser(self, children):
 
