@@ -29,7 +29,7 @@ def build_map(plotting_type, nrml_damage_map, damage_state, exposure_model, boun
     box = define_bounding_box(bounding_box, data[0])
 
     if plotting_type == 0 or plotting_type == 2:  # aggregated
-        locations = data[1].loc[:, ['lat', 'lon']].values
+        locations = data[1].loc[:, ['lon', 'lat']].values
         damages = data[1].loc[:, damage_state].values
         plot_single_map(locations, damages, box, log_scale, marker_size,
                         'Aggregated damages per location: ' + damage_state, 1)
@@ -45,7 +45,7 @@ def build_map(plotting_type, nrml_damage_map, damage_state, exposure_model, boun
         damagesTaxonomies = []
         for i, (taxonomy, sub_group) in enumerate(individualdamages.groupby('asset')):
             df_agg_damage = parsedm.agg_damage_map(sub_group)
-            locations = df_agg_damage.loc[:, ['lat', 'lon']].values
+            locations = df_agg_damage.loc[:, ['lon', 'lat']].values
             damages = df_agg_damage.loc[:, damage_state].values
 
             if locations.shape[0] > 0:
@@ -54,7 +54,7 @@ def build_map(plotting_type, nrml_damage_map, damage_state, exposure_model, boun
             uniqueTaxonomies.append(taxonomy)
             damagesTaxonomies.append(damages.sum())
 
-        plot_pie_chart_losses(uniqueTaxonomies, damagesTaxonomies, damage_state, i + 1)
+    plot_pie_chart_losses(uniqueTaxonomies, damagesTaxonomies, damage_state, i + 1)
 
 
 def plot_pie_chart_losses(uniqueTaxonomies, lossesTaxonomies, damage_state, figNo):
@@ -73,7 +73,7 @@ def plot_pie_chart_losses(uniqueTaxonomies, lossesTaxonomies, damage_state, figN
 
 def define_bounding_box(bounding_box, data):
 
-    locations = data.loc[:, ['lat', 'lon']].values
+    locations = data.loc[:, ['lon', 'lat']].values
 
     box = {"lon_0": None, "lat_0": None, "lon_1": None,
            "lat_1": None, "lon_2": None, "lat_2": None}

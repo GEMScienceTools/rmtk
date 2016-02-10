@@ -47,6 +47,9 @@ import ConfigParser
 import argparse
 import pandas as pd
 from lxml import etree
+import numpy as np
+from scipy.stats import lognorm
+import matplotlib.pyplot as plt
 
 NAMESPACE = 'http://openquake.org/xmlns/nrml/0.5'
 GML_NAMESPACE = 'http://www.opengis.net/gml'
@@ -147,6 +150,119 @@ def xml_to_csv (input_xml, output_csv):
     Converts the XML fragility model file to the CSV format
     """
     print('This feature will be implemented in a future release.')
+
+
+class FragilityModel(object):
+    '''
+    class for a fragility model which is a collection of fragility functions
+    '''
+
+    def parse_xml(self, input_file=None):
+
+        if not os.path.exists(input_file):
+            print('file {} not found'.format(input_file))
+            sys.exit(1)
+
+        self.input_file = input_file
+
+        for _, element in etree.iterparse(input_file):
+
+            if 'fragilityModel' in element.tag:
+
+                self.metadata = dict()
+                self.metadata['asset_category'] = element.attrib['assetCategory']
+                self.metadata['id'] = element.attrib['id']
+                self.metadata['loss_category'] = element.attrib['lossCategory']
+
+                self.frag = dict()
+                for item in element.getchildren():
+
+                    if 'description' in item.tag:
+                        self.metadata['description'] = item.text.strip()
+                    elif 'limitStates' in item.tag:
+                        self.metadata['limit_states'] = item.text.split()
+                    elif 'fragilityFunction' in item.tag:
+                        taxonomy = item.attrib['id']
+                        self.frag[taxonomy] = FragilityFunction(item, self.metadata)
+
+    def plot_fragility(self, im_range):
+        for bldg, bldg_frag in self.frag.iteritems():
+            bldg_frag.plot_fragility(im_range)
+
+class FragilityFunction(object):
+
+    def __init__(self, element, metadata):
+
+        self.metadata = metadata
+        self.taxonomy = element.attrib['id']
+        self.frag_format = element.attrib['format']
+        children = element.getchildren()
+
+        if self.frag_format == 'continuous':
+            self.shape = element.attrib['shape']
+            self.continuousfragilityModelParser(children)
+        else:
+            self.discretefragilityModelParser(children)
+
+    def plot_fragility(self, im_range):
+
+        self.est_poes = self.compute_poes(im_range)
+
+        plt.figure()
+        for state in self.metadata['limit_states']:
+            plt.plot(im_range, self.est_poes[state], label=state)
+        plt.legend()
+        plt.grid(1)
+        plt.xlabel(self.imt)
+        plt.ylabel('Prob. of exceedance')
+        plt.title(self.taxonomy)
+
+    def compute_poes(self, im_range):
+
+        if self.frag_format == 'continuous':
+            est_poes = dict()
+            for state, (mean_, std_) in self.params.iteritems():
+                values = lognorm.cdf(im_range, std_, scale=mean_)
+                values[im_range <= self.noDamageLimit] = 0.0
+                est_poes[state] = values
+        else:
+            est_poes = dict()
+            for state, poe_values in self.poes.iteritems():
+                values = np.interp(im_range, self.iml, poe_values,
+                                   left=0.0, right=1.0)
+                values[im_range <= self.noDamageLimit] = 0.0
+                est_poes[state] = values
+
+        return est_poes
+
+    def continuousfragilityModelParser(self, children):
+
+        self.params = dict()
+        for item in children:
+
+            if 'imls' in item.tag:
+                self.imt = item.attrib['imt']
+                self.noDamageLimit = float(item.attrib['noDamageLimit'])
+                self.iml = (float(item.attrib['minIML']),
+                            float(item.attrib['maxIML']))
+            elif 'params' in item.tag:
+                limit_state = item.attrib['ls']
+                self.params[limit_state] = (float(item.attrib['mean']),
+                                            float(item.attrib['stddev']))
+
+    def discretefragilityModelParser(self, children):
+
+        self.poes = dict()
+        for item in children:
+
+            if 'imls' in item.tag:
+                self.imt = item.attrib['imt']
+                self.noDamageLimit = float(item.attrib['noDamageLimit'])
+                self.iml = [float(x) for x in item.text.split()]
+
+            elif 'poes' in item.tag:
+                limit_state = item.attrib['ls']
+                self.poes[limit_state] = [float(x) for x in item.text.split()]
 
 
 def set_up_arg_parser():
