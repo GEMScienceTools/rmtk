@@ -39,7 +39,8 @@ def build_map(plotting_type, nrml_damage_map, damage_state, exposure_model, boun
         idTaxonomies = np.array(parsee.extractIDTaxonomies(exposure_model, False))
         dict_idTaxonomies = {assetID: taxonomy for assetID, taxonomy in idTaxonomies}
 
-        individualdamages['asset'].replace(dict_idTaxonomies, inplace=True)
+        individualdamages['asset'] = individualdamages['asset'].apply(lambda x: dict_idTaxonomies.get(x, x))
+        # individualdamages.replace('asset', dict_idTaxonomies, inplace=True)
 
         uniqueTaxonomies = []
         damagesTaxonomies = []
