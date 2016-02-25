@@ -11,7 +11,7 @@ import rmtk.plotting.common.parse_exposure as parsee
 def build_map(plotting_type,collapse_map,bounding_box,log_scale,exposure_model,marker_size,export_map_to_csv):
 
     exposure_path = exposure_model
-		
+
     agg_collapses = True
     if plotting_type == 1:
         agg_collapses = False
@@ -22,7 +22,7 @@ def build_map(plotting_type,collapse_map,bounding_box,log_scale,exposure_model,m
     if plotting_type == 0 or plotting_type == 2:
         locations = np.array(data[1][0])
         collapses = np.array(data[1][1])
-      	plot_single_map(locations,collapses,box,log_scale,marker_size,'Aggregated Collapses per location',1)
+        plot_single_map(locations,collapses,box,log_scale,marker_size,'Aggregated Collapses per location',1)
 
     if plotting_type == 1 or plotting_type == 2:
         individualCollapses = data[0]
@@ -34,7 +34,7 @@ def build_map(plotting_type,collapse_map,bounding_box,log_scale,exposure_model,m
             collapsesTaxonomies[i] = sum(collapses)
             if locations.shape[0] > 0:
                 plot_single_map(locations,collapses,box,log_scale,marker_size,'Collapse map for '+uniqueTaxonomies[i],i+2)
-	plot_pie_chart_losses(uniqueTaxonomies,collapsesTaxonomies)
+    plot_pie_chart_losses(uniqueTaxonomies,collapsesTaxonomies)
 
 def plot_pie_chart_losses(uniqueTaxonomies,lossesTaxonomies):
 

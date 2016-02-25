@@ -44,110 +44,114 @@
 # liability for use of the software.
 # -*- coding: utf-8 -*-
 '''
-Post-process risk calculation data to convert collapse maps into different
+Post-process damage calculation data to convert damage maps into different
 formats
 '''
 
-import os
-import csv
 import argparse
-import numpy as np
 from lxml import etree
-from collections import OrderedDict
+import pandas as pd
 
-xmlNRML='{http://openquake.org/xmlns/nrml/0.5}'
+xmlNRML = '{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
 
-def parse_single_collapse_node(element):
+
+def parse_single_damage_node(element, id_node):
     '''
-    Reads the collapse map node element to return the longitude, latitude and
-    asset ref and collapses
+    Reads the damage map node element to return the longitude, latitude and
+    asset ref and damages
     '''
     values = []
-
     for e in element.iter():
         if e.tag == '%spos' % xmlGML:
             coords = str(e.text).split()
             lon = float(coords[0])
             lat = float(coords[1])
-        elif e.tag == '%scf' % xmlNRML:
+        elif e.tag == '%sasset' % xmlNRML:
             ref = e.attrib.get('assetRef')
-            collapses = e.attrib.get('mean')
-            values.append([ref,lon,lat,float(collapses)])
-
+            mean_list = [id_node, ref, lon, lat]
+            for sub in e.getchildren():
+                mean_list.append(float(sub.attrib.get('mean')))
+            values.append(mean_list)
     return values
 
-def collapse_map_parser(input_file):
 
-    values = []
-    meta_info = {}
+def damage_map_parser(input_file):
 
+    id_node = 0
     for _, element in etree.iterparse(input_file):
-        if element.tag == '%sCMNode' % xmlNRML:
-            subValues = parse_single_collapse_node(element)
-            for value in subValues:
-                values.append(value)
+        if element.tag == '%sdamageStates' % xmlNRML:
+            damage_states = element.text.split()
+            column_list = ['node', 'asset', 'lon', 'lat']
+            [column_list.append(x) for x in damage_states]
 
-    return values
+        elif element.tag == '%sDDNode' % xmlNRML:
+            subValues = parse_single_damage_node(element, id_node)
+            df_subValues = pd.DataFrame(subValues, columns=column_list)
+            try:
+                df_values = df_values.append(df_subValues, ignore_index=True)
+            except NameError:
+                df_values = df_subValues.copy()
+            id_node += 1
 
-def agg_collapse_map(values):
+    return df_values
 
-    uniqueLocations = []
-    aggCollapses = []
-    for value in values:
-        if value[1:3] not in uniqueLocations:
-            uniqueLocations.append(value[1:3])
-            aggCollapses.append(0)
-        idx = uniqueLocations.index(value[1:3])
-        aggCollapses[idx]=aggCollapses[idx]+float(value[3])
 
-    return uniqueLocations, aggCollapses
+def agg_damage_map(df_values):
 
-def parse_collapse_maps(nrml_collapse_map,agg_collapses,save_flag):
+    uniqueLocations = df_values.groupby('node')['lon', 'lat'].mean()
+    aggdamages = df_values.groupby('node').sum()
+    aggdamages.update(uniqueLocations)
+    return aggdamages
+
+
+def parse_damage_maps(nrml_damage_map, agg_damages, save_flag):
     '''
-    Writes the Collapse map set to csv
+    Writes the damage map set to csv
     '''
-    values = collapse_map_parser(nrml_collapse_map)
-    agg_values = []
+    df_values = damage_map_parser(nrml_damage_map)
+
     if save_flag:
-        output_file = open(nrml_collapse_map.replace('xml','csv'),'w')
-        for iasset in range(len(values)):
-            output_file.write(values[iasset][0]+','+str(values[iasset][1])+','+
-                str(values[iasset][2])+','+str(values[iasset][3])+'\n')
-        output_file.close()
+        output_file = nrml_damage_map.replace('xml', 'csv')
+        df_values.to_csv(output_file, index=False)
 
-    if agg_collapses:
-        agg_values = agg_collapse_map(values)
+    agg_values = None
+    if agg_damages:
+        agg_values = agg_damage_map(df_values)
         if save_flag:
-            agg_output_file = open(nrml_collapse_map.replace('xml','_agg.csv'),'w')
-            for iloc in range(len(agg_values[0])):
-                agg_output_file.write(str(agg_values[0][iloc][0])+','+str(agg_values[0][iloc][1])+','+str(agg_values[1][iloc])+'\n')
-            agg_output_file.close()
+            agg_output_file = nrml_damage_map.replace('xml', '_agg.csv')
+            agg_values.to_csv(agg_output_file, index=False)
 
-    return values, agg_values
+    return df_values, agg_values
+
 
 def set_up_arg_parser():
     """
     Can run as executable. To do so, set up the command line parser
     """
     parser = argparse.ArgumentParser(
-        description='Convert NRML collapse maps file to comma delimited '
-            ' .txt files.'
-            'To run just type: python parse_collapse_maps.py '
-            '--input-file=PATH_TO_COLLAPSE_MAP_NRML_FILE '
-            'include --agg-collapses if you wish to aggregate the collapses per location '
-            'include --save if you wish to save values into csv format' , add_help=False)
+        description='Convert NRML damage maps file to comma delimited '
+        ' .txt files.'
+        'To run just type: python parse_damage_maps.py '
+        '--input-file=PATH_TO_damage_MAP_NRML_FILE '
+        'include --agg-damages if you wish to aggregate the damages per location '
+        'include --save if you wish to save values into csv format', add_help=False)
     flags = parser.add_argument_group('flag arguments')
     flags = parser.add_argument_group('flag arguments')
     flags.add_argument('-h', '--help', action='help')
-    flags.add_argument('--input-file',
-        help='path to collapse map NRML file (Required)',
+    flags.add_argument(
+        '--input-file',
+        help='path to damage map NRML file (Required)',
         default=None,
         required=True)
-    flags.add_argument('--agg-collapses', action="store_true",
-        help='aggregates the collapses per location',
+    flags.add_argument(
+        '--agg-damages',
+        action="store_true",
+        help='aggregates the damages per location',
         required=False)
-    flags.add_argument('--save', action="store_true",
+    flags.add_argument(
+        '--save',
+        action="store_true",
         help='saves values into csv',
         required=False)
 
@@ -159,4 +163,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.input_file:
-        parse_collapse_maps(args.input_file,args.agg_collapses,args.save)
+        parse_damage_maps(args.input_file, args.agg_damages, args.save)

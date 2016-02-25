@@ -43,8 +43,7 @@ Convert exposure model csv files to xml.
 """
 
 import os
-import csv
-import math
+import ConfigParser
 import argparse
 import pandas as pd
 from lxml import etree
@@ -53,126 +52,122 @@ NAMESPACE = 'http://openquake.org/xmlns/nrml/0.4'
 GML_NAMESPACE = 'http://www.opengis.net/gml'
 SERIALIZE_NS_MAP = {None: NAMESPACE, 'gml': GML_NAMESPACE}
 
-def csv_to_xml(input_csv, metadata_csv, output_xml):
+
+def split_strip(value):
+    return [x.strip() for x in value.split(',')]
+
+
+def csv_to_xml(metadata_txt, output_xml):
     """
     Converts the CSV exposure model file to the NRML format
     """
-    metadata = {}
-    data = pd.io.parsers.read_csv(input_csv)
-    with open(metadata_csv, 'rU') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            metadata[row[0]] = row[1]
+
+    conf = ConfigParser.ConfigParser()
+    conf.read(metadata_txt)
+    metadata = conf._sections
+    metadata['main']['csv_file'] = os.path.abspath(
+        os.path.join(os.path.abspath(metadata_txt),
+                     os.pardir,
+                     metadata['main']['csv_file']))
+
+    key_less = metadata.keys()
+    key_less.remove('main')
+
+    for key in key_less:
+        for item, value in metadata[key].iteritems():
+            if ',' in value:
+                metadata[key][item] = split_strip(value)
+
+    # for key, value in metadata['cost'].iteritems():
+    #     metadata['cost'][key] = value.split(', ')
+    # metadata['occupants']['period'] = split_strip(metadata['occupants']['period'])
+    # metadata['mapping']['cost'] = split_strip(metadata['mapping']['cost'])
+    # metadata['mapping']['occupants'] = split_strip(metadata['mapping']['occupants'])
+    # metadata['mapping']['deductible'] = split_strip(metadata['mapping']['deductible'])
+    # metadata['mapping']['insurance_limit'] = split_strip(metadata['mapping']['insurance_limit'])
+    # metadata['mapping']['insurance_limit'] = split_strip(metadata['mapping']['insurance_limit'])
+
+    data = pd.read_csv(metadata['main']['csv_file'])
 
     with open(output_xml, "w") as f:
         root = etree.Element('nrml', nsmap=SERIALIZE_NS_MAP)
         node_em = etree.SubElement(root, "exposureModel")
-        node_em.set("id", metadata['id'])
-        node_em.set("category", metadata['category'])
-        node_em.set("taxonomySource", metadata['taxonomy_source'])
+        node_em.set("id", metadata['main']['id'])
+        node_em.set("category", metadata['main']['category'])
+        node_em.set("taxonomySource", metadata['main']['taxonomy_source'])
 
         node_desc = etree.SubElement(node_em, "description")
-        node_desc.text = metadata['description']
+        node_desc.text = metadata['main']['description']
 
         node_conv = etree.SubElement(node_em, "conversions")
+
+        if 'per_area' in metadata['cost']['cost_type']:
+            node_area = etree.SubElement(node_conv, "area")
+            node_area.set("type", metadata['area']['area_type'])
+            node_area.set("unit", metadata['area']['area_unit'])
+
         node_cost_types = etree.SubElement(node_conv, "costTypes")
+        for name_, type_, unit_ in zip(metadata['cost']['cost_name'],
+                                       metadata['cost']['cost_type'],
+                                       metadata['cost']['cost_unit']):
+            node_cost_type_s = etree.SubElement(node_cost_types, "costType")
+            node_cost_type_s.set("name", name_)
+            node_cost_type_s.set("type", type_)
+            node_cost_type_s.set("unit", unit_)
 
-        node_cost_type_s = etree.SubElement(node_cost_types, "costType")
-        node_cost_type_s.set("name", "structural")
-        node_cost_type_s.set("type", metadata['structural_cost_aggregation_type'])
-        node_cost_type_s.set("unit", metadata['structural_cost_currency'])
-
-        if metadata['nonstructural_cost_aggregation_type']:
-            node_cost_type_ns = etree.SubElement(node_cost_types, "costType")
-            node_cost_type_ns.set("name", "nonstructural")
-            node_cost_type_ns.set("type", metadata['nonstructural_cost_aggregation_type'])
-            node_cost_type_ns.set("unit", metadata['nonstructural_cost_currency'])
-        if metadata['contents_cost_aggregation_type']:
-            node_cost_type_c = etree.SubElement(node_cost_types, "costType")
-            node_cost_type_c.set("name", "contents")
-            node_cost_type_c.set("type", metadata['contents_cost_aggregation_type'])
-            node_cost_type_c.set("unit", metadata['contents_cost_currency'])
-
-        if metadata['insurance_deductible_is_absolute']:
+        if metadata['insurance']['deductible_absolute'] in ['true', 'false']:
             node_deductible = etree.SubElement(node_conv, "deductible")
-            node_deductible.set("isAbsolute", metadata['insurance_deductible_is_absolute'].lower())
-        if metadata['insurance_limit_is_absolute']:
-            node_limit= etree.SubElement(node_conv, "insuranceLimit")
-            node_limit.set("isAbsolute", metadata['insurance_limit_is_absolute'].lower())
+            node_deductible.set("isAbsolute", metadata['insurance']['deductible_absolute'])
+
+        if metadata['insurance']['limit_absolute'] in ['true', 'false']:
+            node_limit = etree.SubElement(node_conv, "insuranceLimit")
+            node_limit.set("isAbsolute", metadata['insurance']['limit_absolute'])
 
         node_assets = etree.SubElement(node_em, "assets")
-        for row_index, row in data.iterrows():
+
+        for _, row in data.iterrows():
+
             node_asset = etree.SubElement(node_assets, "asset")
-            node_asset.set("id", str(row['asset_id']))
-            node_asset.set("number", str(row['num_buildings']))
-            node_asset.set("area", str(row['built_up_area']))
-            node_asset.set("taxonomy", str(row['taxonomy']))
 
             node_location = etree.SubElement(node_asset, "location")
-            node_location.set("lon", str(row['longitude']))
-            node_location.set("lat", str(row['latitude']))
+            node_location.set("lon", str(row[metadata['mapping']['lon']]))
+            node_location.set("lat", str(row[metadata['mapping']['lat']]))
+
+            node_asset.set("id", str(row[metadata['mapping']['id']]))
+            node_asset.set("number", str(row[metadata['mapping']['number']]))
+            node_asset.set("taxonomy", str(row[metadata['mapping']['taxonomy']]))
+
+            if 'per_area' in metadata['cost']['cost_type']:
+                node_asset.set("area", str(row[metadata['mapping']['area']]))
 
             node_costs = etree.SubElement(node_asset, "costs")
+            for name_, value_, limit_, deduct_, retro_ in \
+                zip(metadata['cost']['cost_name'],
+                    metadata['mapping']['cost'],
+                    metadata['mapping']['insurance_limit'],
+                    metadata['mapping']['deductible'],
+                    metadata['mapping']['retrofit']):
 
-            if not math.isnan(row['structural_replacement_cost']):
                 node_cost_s = etree.SubElement(node_costs, "cost")
-                node_cost_s.set("type", 'structural')
-                node_cost_s.set("value", str(row['structural_replacement_cost']))
-            if not math.isnan(row['structural_insurance_deductible']):
-                node_cost_s.set("deductible", str(row['structural_insurance_deductible']))
-            if not math.isnan(row['structural_insurance_limit']):
-                node_cost_s.set("insuranceLimit", str(row['structural_insurance_limit']))
-            if not math.isnan(row['structural_retrofit_cost']):
-                node_cost_s.set("retrofitted", str(row['structural_retrofit_cost']))
+                node_cost_s.set("type", name_)
+                node_cost_s.set("value", str(row[value_]))
 
-            if not math.isnan(row['nonstructural_replacement_cost']):
-                node_cost_ns = etree.SubElement(node_costs, "cost")
-                node_cost_ns.set("type", 'nonstructural')
-                node_cost_ns.set("value", str(row['nonstructural_replacement_cost']))
-            if not math.isnan(row['nonstructural_insurance_deductible']):
-                node_cost_ns.set("deductible", str(row['nonstructural_insurance_deductible']))
-            if not math.isnan(row['nonstructural_insurance_limit']):
-                node_cost_ns.set("insuranceLimit", str(row['nonstructural_insurance_limit']))
-            if not math.isnan(row['nonstructural_retrofit_cost']):
-                node_cost_ns.set("retrofitted", str(row['nonstructural_retrofit_cost']))
+                if limit_ != 'None':
+                    node_cost_s.set("insuranceLimit", str(row[limit_]))
 
-            if not math.isnan(row['contents_replacement_cost']):
-                node_cost_c = etree.SubElement(node_costs, "cost")
-                node_cost_c.set("type", 'contents')
-                node_cost_c.set("value", str(row['contents_replacement_cost']))
-            if not math.isnan(row['contents_insurance_deductible']):
-                node_cost_c.set("deductible", str(row['contents_insurance_deductible']))
-            if not math.isnan(row['contents_insurance_limit']):
-                node_cost_c.set("insuranceLimit", str(row['contents_insurance_limit']))
-            if not math.isnan(row['contents_retrofit_cost']):
-                node_cost_c.set("retrofitted", str(row['contents_retrofit_cost']))
+                if deduct_ != 'None':
+                    node_cost_s.set("deductible", str(row[deduct_]))
 
-            if not math.isnan(row['downtime_cost']):
-                node_cost_d = etree.SubElement(node_costs, "cost")
-                node_cost_d.set("type", 'downtime')
-                node_cost_d.set("value", str(row['downtime_cost']))
-            if not math.isnan(row['downtime_insurance_deductible']):
-                node_cost_d.set("deductible", str(row['downtime_insurance_deductible']))
-            if not math.isnan(row['downtime_insurance_limit']):
-                node_cost_d.set("insuranceLimit", str(row['downtime_insurance_limit']))
+                if retro_ != 'None':
+                    node_cost_s.set("retrofit", str(row[retro_]))
 
-            if not math.isnan(row['day_occupants']) or math.isnan(row['night_occupants']) or math.isnan(row['transit_occupants']):
-                node_occupancies = etree.SubElement(node_asset, "occupancies")
+            node_occupancies = etree.SubElement(node_asset, "occupancies")
 
-                if not math.isnan(row['day_occupants']):
-                    node_occ_day = etree.SubElement(node_occupancies, "occupancy")
-                    node_occ_day.set("period", 'day')
-                    node_occ_day.set("occupants", str(row['day_occupants']))
-
-                if not math.isnan(row['night_occupants']):
-                    node_occ_night = etree.SubElement(node_occupancies, "occupancy")
-                    node_occ_night.set("period", 'night')
-                    node_occ_night.set("occupants", str(row['night_occupants']))
-
-                if not math.isnan(row['transit_occupants']):
-                    node_occ_transit = etree.SubElement(node_occupancies, "occupancy")
-                    node_occ_transit.set("period", 'transit')
-                    node_occ_transit.set("occupants", str(row['transit_occupants']))
+            for name_, mapping_ in zip(metadata['occupants']['period'],
+                                       metadata['mapping']['occupants']):
+                node_occ = etree.SubElement(node_occupancies, "occupancy")
+                node_occ.set("occupants", str(row[mapping_]))
+                node_occ.set("period", name_)
 
         f.write(etree.tostring(root, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
 
@@ -192,8 +187,7 @@ def set_up_arg_parser():
     description = ('Convert an Exposure Model from CSV to XML and '
                    'vice versa.\n\nTo convert from CSV to XML: '
                    '\npython exposure_model_converter.py '
-                   '--input-csv-file PATH_TO_EXPOSURE_MODEL_CSV_FILE '
-                   '--metadata-csv-file PATH_TO_EXPOSURE_METADATA_CSV_FILE '
+                   '--metadata_txt-file PATH_TO_EXPOSURE_METADATA_TXT_FILE '
                    '--output-xml-file PATH_TO_OUTPUT_XML_FILE'
                    '\n\nTo convert from XML to CSV type: '
                    '\npython exposure_model_converter.py '
@@ -203,38 +197,32 @@ def set_up_arg_parser():
     parser = argparse.ArgumentParser(description=description, formatter_class=argparse.RawTextHelpFormatter)
     flags = parser.add_argument_group('flag arguments')
 
-    group_input = flags.add_argument_group('input files')
-    group_input_choice = group_input.add_mutually_exclusive_group(required=True)
-    group_input_choice.add_argument('--input-xml-file',
-                       help='path to exposure model XML file',
-                       default=None)
-    group_input_choice.add_argument('--input-csv-file',
-                       help='path to exposure model CSV file',
-                       default=None)
-    group_input.add_argument('--metadata-csv-file',
-                       help='path to exposure metadata CSV file',
-                       default=None,
-                       required=True)
+    group_input = flags.add_mutually_exclusive_group(required=True)
 
-    group_output = flags.add_argument_group('output files')
+    group_input.add_argument('--metadata-txt-file',
+                             help='path to exposure metadata TXT file',
+                             default=None)
+    group_input.add_argument('--input-csv-file',
+                             help='path to exposure model CSV file',
+                             default=None)
+
+    group_output = flags.add_mutually_exclusive_group()
     group_output.add_argument('--output-xml-file',
                               help='path to output XML file',
+                              default=None)
+    group_output.add_argument('--output-csv-file',
+                              help='path to output CSV file',
                               default=None,
                               required=False)
-    return parser
 
+    return parser
 
 if __name__ == "__main__":
 
     parser = set_up_arg_parser()
     args = parser.parse_args()
-    if args.input_csv_file:
-        if args.output_xml_file:
-            output_file = args.output_xml_file
-        else:
-            (filename, ext) = os.path.splitext(args.input_csv_file)
-            output_file = filename + '.xml'
-        csv_to_xml(args.input_csv_file, args.metadata_csv_file, output_file)
+    if args.metadata_txt_file:
+        csv_to_xml(args.metadata_txt_file, args.output_xml_file)
     elif args.input_xml_file:
         if args.output_csv_file:
             output_file = args.output_csv_file

@@ -3,15 +3,13 @@ Post-process risk calculation data to convert loss curves into different
 formats
 '''
 
-import os
-import csv
 import argparse
 import numpy as np
 from lxml import etree
-from collections import OrderedDict
 
-xmlNRML='{http://openquake.org/xmlns/nrml/0.5}'
+xmlNRML = '{http://openquake.org/xmlns/nrml/0.5}'
 xmlGML = '{http://www.opengis.net/gml}'
+
 
 def parse_single_loss_curve(element):
     '''
@@ -47,6 +45,7 @@ def parse_metadata(element):
     metadata['lossType'] = element.attrib.get('lossType')
     return metadata
 
+
 def LossCurveParser(input_file):
 
     refs = []
@@ -73,6 +72,7 @@ def LossCurveParser(input_file):
 
     return refs, longitude, latitude, poes, losses
 
+
 def parse_loss_file(input_file):
     '''
     Reads an xml loss curves file and returns a dictionary with
@@ -91,12 +91,13 @@ def parse_loss_file(input_file):
             continue
     return metadata, asset_refs, loss_curves
 
+
 def LossCurves2Csv(nrml_loss_curves):
     '''
     Writes the Loss curve set to csv
     '''
     refs, longitude, latitude, poes, losses = LossCurveParser(nrml_loss_curves)
-    output_file = open(nrml_loss_curves.replace('xml','csv'),'w')
+    output_file = open(nrml_loss_curves.replace('xml', 'csv'), 'w')
     for iloc in range(len(refs)):
         print len(poes)
         poes_list = ','.join(map(str, poes[iloc]))
@@ -111,16 +112,16 @@ def set_up_arg_parser():
     """
     parser = argparse.ArgumentParser(
         description='Convert NRML loss curves file to tab delimited '
-            ' .txt files. Inside the specified output directory, create a .txt '
-            'file for each stochastic event set.'
-            'To run just type: python parse_loss_curves.py '
-            '--input-file=PATH_TO_LOSS_CURVE_NRML_FILE ', add_help=False)
+        ' .txt files. Inside the specified output directory, create a .txt '
+        'file for each stochastic event set.'
+        'To run just type: python parse_loss_curves.py '
+        '--input-file=PATH_TO_LOSS_CURVE_NRML_FILE ', add_help=False)
     flags = parser.add_argument_group('flag arguments')
     flags.add_argument('-h', '--help', action='help')
     flags.add_argument('--input-file',
-        help='path to loss curves NRML file (Required)',
-        default=None,
-        required=True)
+                       help='path to loss curves NRML file (Required)',
+                       default=None,
+                       required=True)
 
     return parser
 

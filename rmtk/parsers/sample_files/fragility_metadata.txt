@@ -1,0 +1,35 @@
+[main]
+id: HAZUS_High_Code
+asset_category: building
+loss_category: structural
+description: Fragility Functions for High Code Structures
+limit_states: slight, moderate, extreme, complete
+# location of fragility files relative to this file
+file_discrete: ./fragility_discrete.csv
+file_continuous: ./fragility_continuous.csv
+
+[W]
+format: discrete
+imt: PGA
+nodamage_limit: 0.01
+
+[W2]
+format: discrete
+imt: PGA
+nodamage_limit: 0.01
+
+[RC]
+format: continuous
+shape: logncdf
+imt: SA(0.3)
+nodamage_limit: 0.05
+miniml: 0.0
+maximl: 1.0
+
+[UFB]
+format: continuous
+shape: logncdf
+imt: PGA
+nodamage_limit: 0.05
+miniml: 0.0
+maximl: 1.0
