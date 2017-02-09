@@ -61,7 +61,7 @@ setup(
     keywords="seismic risk",
     license="AGPL3",
     platforms=["any"],
-    package_data={"hmtk": [
+    package_data={"rmtk": [
         "README.md", "LICENSE"]},
     include_package_data=True,
     zip_safe=False,
