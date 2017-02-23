@@ -3,7 +3,7 @@ Risk Modeller's Toolkit (RMTK)
 
 This is the web repository of the Risk Modeller's Toolkit (RMTK). 
 The RMTK is a suite of tools developed by scientists working at the
-Global Earthquake Model (GEM) Foundation. The main purpouse
+Global Earthquake Model (GEM) Foundation. The main purpose
 of the RMTK is to provide a suite of tools for the creation of seismic
 risk input models and for the post-processing and visualisation of 
 OpenQuake risk results.
