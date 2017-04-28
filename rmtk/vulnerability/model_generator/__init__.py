@@ -2,7 +2,7 @@
 #
 # LICENSE
 #
-# Copyright © 2014-2015, GEM Foundation, Chiara Casotto, Anirudh Rao,
+# Copyright © 2014-2017, GEM Foundation, Chiara Casotto, Anirudh Rao,
 # Vitor Silva.
 #
 # The Risk Modeller's Toolkit is free software: you can redistribute

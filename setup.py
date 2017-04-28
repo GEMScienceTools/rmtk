@@ -43,6 +43,7 @@ setup(
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[
         # FIXME taken from the README, the list is incomplete
+        'lxml',
         'numpy',
         'scipy',
         'matplotlib',
