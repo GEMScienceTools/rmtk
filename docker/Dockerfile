@@ -24,4 +24,7 @@ RUN ${HOME}/venv/bin/pip install -U pip wheel && \
     ${HOME}/venv/bin/pip install -e rmtk/
 
 EXPOSE 8888:8888
-CMD cd rmtk && ${HOME}/venv/bin/ipython notebook --no-browser --ip=0.0.0.0
+CMD cd rmtk && ${HOME}/venv/bin/jupyter notebook --no-browser --ip=0.0.0.0 \
+                                                 --NotebookApp.password='' \
+                                                 --NotebookApp.token='' \
+                                                 --NotebookApp.password_required=False
