@@ -19,6 +19,7 @@ RUN wget -q https://github.com/GEMScienceTools/rmtk/archive/$branch.tar.gz && \
     tar xzf $branch.tar.gz && mv rmtk-$branch rmtk
 
 RUN virtualenv ${HOME}/venv
+RUN ls -l rmtk
 RUN ${HOME}/venv/bin/pip install -U pip wheel && \
     ${HOME}/venv/bin/pip install -r rmtk/requirements-py27-linux64.txt && \
     ${HOME}/venv/bin/pip install -e rmtk/
