@@ -1,0 +1,12 @@
+language: python
+python:
+    - 2.7
+
+services:
+    - docker
+
+script:
+    - cd docker
+    - docker build --rm=true -t openquake/rmtk -f Dockerfile .
+
+
