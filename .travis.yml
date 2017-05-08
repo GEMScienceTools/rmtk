@@ -7,6 +7,6 @@ services:
 
 script:
     - cd docker
-    - docker build --rm=true -t openquake/rmtk -f Dockerfile .
+    - docker build --build-arg branch=$TRAVIS_BRANCH --rm=true -t openquake/rmtk -f Dockerfile .
 
 
