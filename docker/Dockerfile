@@ -16,7 +16,7 @@ WORKDIR ${HOME}
 ADD https://api.github.com/repos/GEMScienceTools/rmtk/git/refs/heads/$branch /tmp/nocache.json
 
 RUN wget -q https://github.com/GEMScienceTools/rmtk/archive/$branch.tar.gz && \
-    tar xzf $branch.tar.gz && mv rmtk-$branch rmtk
+    tar xzf $branch.tar.gz && mv rmtk-$branch rmtk && rm $branch.tar.gz
 
 RUN virtualenv ${HOME}/venv
 RUN ls -l rmtk
