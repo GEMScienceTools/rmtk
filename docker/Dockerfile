@@ -14,13 +14,12 @@ ENV HOME /home/openquake
 WORKDIR ${HOME}
 
 RUN wget -q https://github.com/GEMScienceTools/rmtk/archive/$branch.tar.gz && \
-    tar xzf $branch.tar.gz && mv rmtk-$branch rmtk && \
-    ${HOME}/venv/bin/pip install -e rmtk
+    tar xzf $branch.tar.gz && mv rmtk-$branch rmtk
 
 RUN virtualenv ${HOME}/venv
 RUN ${HOME}/venv/bin/pip install -U pip wheel && \
     ${HOME}/venv/bin/pip install -r rmtk/requirements-py27-linux64.txt
-
+    ${HOME}/venv/bin/pip install -e rmtk/
 
 EXPOSE 8888:8888
 CMD cd rmtk && ${HOME}/venv/bin/ipython notebook --no-browser --ip=0.0.0.0
