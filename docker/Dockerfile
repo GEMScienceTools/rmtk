@@ -20,7 +20,7 @@ RUN wget -q https://github.com/GEMScienceTools/rmtk/archive/$branch.tar.gz && \
 
 RUN virtualenv ${HOME}/venv
 RUN ${HOME}/venv/bin/pip install -U pip wheel && \
-    ${HOME}/venv/bin/pip install -r rmtk/requirements-py27-linux64.txt
+    ${HOME}/venv/bin/pip install -r rmtk/requirements-py27-linux64.txt && \
     ${HOME}/venv/bin/pip install -e rmtk/
 
 EXPOSE 8888:8888
