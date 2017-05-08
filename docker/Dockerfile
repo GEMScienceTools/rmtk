@@ -17,6 +17,8 @@ ADD https://api.github.com/repos/GEMScienceTools/rmtk/git/refs/heads/$branch /tm
 
 RUN wget -q https://github.com/GEMScienceTools/rmtk/archive/$branch.tar.gz && \
     tar xzf $branch.tar.gz && mv rmtk-$branch rmtk && rm $branch.tar.gz
+RUN wget -q https://github.com/GEMScienceTools/rmtk_data/archive/master.tar.gz && \
+    tar xzf master.tar.gz && mv rmtk_data-master rmtk_data && rm master.tar.gz
 
 RUN virtualenv ${HOME}/venv
 RUN ls -l rmtk
