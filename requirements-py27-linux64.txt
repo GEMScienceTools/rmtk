@@ -1,5 +1,6 @@
 http://cdn.ftp.openquake.org/wheelhouse/linux/py27/numpy-1.11.1-cp27-cp27mu-manylinux1_x86_64.whl
 http://cdn.ftp.openquake.org/wheelhouse/linux/py27/scipy-0.17.1-cp27-cp27mu-manylinux1_x86_64.whl
+http://cdn.ftp.openquake.org/wheelhouse/linux/py27/Shapely-1.5.13-cp27-cp27mu-manylinux1_x86_64.whl
 http://cdn.ftp.openquake.org/wheelhouse/linux/py27/matplotlib-1.5.3-cp27-cp27mu-manylinux1_x86_64.whl
 http://cdn.ftp.openquake.org/wheelhouse/linux/py/pyparsing-2.1.10-py2.py3-none-any.whl
 http://cdn.ftp.openquake.org/wheelhouse/linux/py/python_dateutil-2.6.0-py2.py3-none-any.whl

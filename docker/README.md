@@ -15,7 +15,7 @@ $ docker build --build-arg branch=mybranch --rm=true -t openquake/rmtk:mybranch 
 ### Start a new container
 
 ```bash
-$ docker run --name rmtk -p 8888:8888 openquake/rmtk
+$ docker run --name rmtk -d -p 8888:8888 openquake/rmtk
 ```
 
 A custom port can be specified if `8888` is already in use: in example `-p 8885:8888` exposes port `8885`.
