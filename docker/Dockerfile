@@ -2,6 +2,7 @@
 FROM ubuntu:xenial
 MAINTAINER Daniele Viganò <daniele@openquake.org>
 
+ARG repo=GEMScienceTools
 ARG branch=master
 
 RUN apt-get update && apt-get install -y \
@@ -13,11 +14,11 @@ USER openquake
 ENV HOME /home/openquake
 WORKDIR ${HOME}
 
-ADD https://api.github.com/repos/GEMScienceTools/rmtk/git/refs/heads/$branch /tmp/nocache.json
+ADD https://api.github.com/repos/$repo/rmtk/git/refs/heads/$branch /tmp/nocache.json
 
-RUN wget -q https://github.com/GEMScienceTools/rmtk/archive/$branch.tar.gz && \
+RUN wget -q https://github.com/$repo/rmtk/archive/$branch.tar.gz && \
     tar xzf $branch.tar.gz && mv rmtk-$branch rmtk && rm $branch.tar.gz
-RUN wget -q https://github.com/GEMScienceTools/rmtk_data/archive/master.tar.gz && \
+RUN wget -q https://github.com/$repo/rmtk_data/archive/master.tar.gz && \
     tar xzf master.tar.gz && mv rmtk_data-master rmtk_data && rm master.tar.gz
 
 RUN virtualenv ${HOME}/venv

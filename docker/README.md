@@ -6,10 +6,10 @@
 $ docker build --rm=true -t openquake/rmtk -f Dockerfile .
 ```
 
-A custom branch can be used too:
+A custom branch and/or a custom repo can be used too:
 
 ```bash
-$ docker build --build-arg branch=mybranch --rm=true -t openquake/rmtk:mybranch -f Dockerfile .
+$ docker build --build-arg branch=mybranch --build-arg repo=GEMScienceTools --rm=true -t openquake/rmtk:mybranch -f Dockerfile .
 ```
 
 ### Start a new container
