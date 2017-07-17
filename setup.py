@@ -47,8 +47,7 @@ setup(
         'numpy',
         'scipy',
         'shapely',
-        'matplotlib',
-        'basemap',
+        'matplotlib'
     ],
     author='GEM Foundation',
     author_email='risk@globalquakemodel.org',
