@@ -3,13 +3,13 @@ Risk Modeller's Toolkit (RMTK)
 
 This is the web repository of the Risk Modeller's Toolkit (RMTK). 
 The RMTK is a suite of tools developed by scientists working at the
-Global Earthquake Model (GEM) Foundation. The main purpouse
+Global Earthquake Model (GEM) Foundation. The main purpose
 of the RMTK is to provide a suite of tools for the creation of seismic
 risk input models and for the post-processing and visualisation of 
 OpenQuake risk results.
 
 
-###Plotting Tools
+### Plotting Tools
 
 The toolkit contains the following functionalities for visualising 
 seismic risk results (please refer to the documentation and
@@ -28,7 +28,7 @@ tutorial for more information):
     - Damage Distribution Statistics
 
 
-###Risk Tools
+### Risk Tools
 
 The toolkit contains the following functionalities for post-processing 
 probabilistic seismic hazard and risk results 
@@ -38,7 +38,7 @@ probabilistic seismic hazard and risk results
 * Logic-Tree Branch Selector
 
 
-###Vulnerability Tools
+### Vulnerability Tools
 
 The toolkit contains the following functionalities for constructing 
 seismic risk input models (please refer to the documentation and
@@ -71,7 +71,7 @@ tutorial for more information):
 
 
 
-####Dependencies
+#### Dependencies
 
 The main dependencies of the toolkit are the following:
 * csv
@@ -83,7 +83,7 @@ For the libraries part of the OpenQuake suite the reader can refer to:
 http://github.com/gem
 
 
-####License
+#### License
 
 The Risk Modeller's Toolkit (RMTK) is free software: you can redistribute 
 it and/or modify it under the terms of the GNU Affero General Public 
@@ -94,7 +94,7 @@ Copyright © 2014-2015, GEM Foundation, Chiara Casotto, Anirudh Rao,
 Vitor Silva, Mabé Villar.
 
 
-####Disclaimer
+#### Disclaimer
 
 The software Risk Modeller's Toolkit (RMTK) provided herein 
 is released as a prototype implementation on behalf of 
