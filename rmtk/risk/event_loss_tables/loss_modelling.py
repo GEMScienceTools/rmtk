@@ -8,9 +8,9 @@ import rmtk
 import parse_ses
 import parse_elt
 
-def lossModelling(event_loss_table_folder,save_ses_csv,save_elt_csv,total_cost,return_periods):
+def lossModelling(event_loss_table_folder,save_ses_csv,save_elt_csv,total_cost,investigationTime,return_periods):
 	
-    investigationTime, ses = parse_ses.parse_ses(event_loss_table_folder,save_ses_csv)
+    timeSES, ses = parse_ses.parse_ses(event_loss_table_folder,save_ses_csv)
     event_loss_table = parse_elt.parse_elt(event_loss_table_folder,save_elt_csv)
     losses, rateOfExceedance = estimateLosses(event_loss_table,investigationTime)
     maxLoss, aal, aalr, lossLevels = estimateLossStatistics(losses,rateOfExceedance,investigationTime,total_cost,return_periods)
@@ -209,7 +209,9 @@ def estimateLosses(event_loss_table,investigationTime):
 
     allLosses = map(float, event_loss_table[:,1])
     allLosses.sort(reverse=True)
+    print 'Investigation time:'
     print investigationTime
+    print 'Number of ruptures:'
     print len(allLosses)
     rates = np.arange(1,len(allLosses)+1)/float(investigationTime)
 
