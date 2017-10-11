@@ -3,4 +3,5 @@
 .ipynb_checkpoints
 .gitignore~
 *.swp
+*.egg-info
 ToDO.xlsx

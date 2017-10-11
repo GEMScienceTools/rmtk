@@ -1,0 +1,11 @@
+language: python
+python:
+    - 2.7
+
+services:
+    - docker
+
+script:
+    - cd docker
+    - if [ "$TRAVIS_PULL_REQUEST_BRANCH" != "" ]; then branch=$TRAVIS_PULL_REQUEST_BRANCH; else branch=$TRAVIS_BRANCH; fi
+    - echo "Building branch $branch" && docker build --build-arg branch=$branch --rm=true -t openquake/rmtk -f Dockerfile .
