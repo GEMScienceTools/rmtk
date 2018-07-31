@@ -8,6 +8,6 @@ http://cdn.ftp.openquake.org/wheelhouse/archived/v1.6.0/linux/py/cycler-0.10.0-p
 http://cdn.ftp.openquake.org/wheelhouse/archived/v1.6.0/linux/py27/pyproj-1.9.5.1-cp27-cp27mu-manylinux1_x86_64.whl
 http://cdn.ftp.openquake.org/wheelhouse/archived/v1.6.0/linux/py27/basemap-1.1.0-cp27-cp27mu-manylinux1_x86_64.whl
 lxml
-ipython==5.2.2
-notebook==4.4.1
-jupyter==1.0.0
+ipython
+notebook
+jupyter
