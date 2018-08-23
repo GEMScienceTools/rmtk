@@ -5,7 +5,10 @@ python:
 services:
     - docker
 
-script:
+install:
     - cd docker
     - if [ "$TRAVIS_PULL_REQUEST_BRANCH" != "" ]; then branch=$TRAVIS_PULL_REQUEST_BRANCH; else branch=$TRAVIS_BRANCH; fi
     - echo "Building branch $branch" && docker build --build-arg branch=$branch --rm=true -t openquake/rmtk -f Dockerfile .
+
+script:
+    - docker run --rm -ti openquake/rmtk /bin/bash -c "echo exit | ./rmtk/bin/OpenSees.u1604"
