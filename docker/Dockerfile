@@ -6,7 +6,8 @@ ARG repo=GEMScienceTools
 ARG branch=master
 
 RUN apt-get update && apt-get install -y \
-    wget python python-virtualenv python-pip
+    wget python python-virtualenv python-pip \
+    libgfortran3 libtcl8.5
 
 RUN useradd -u 1000 -d /home/openquake -m openquake
 
