@@ -1,0 +1,5 @@
+Damage States,distribution,Mean,Cov,A,B
+Slight,normal,0.1,0,0,0.15
+Moderate,normal,0.3,0,0.2,0.4
+Extensive,normal,0.6,0,0.4,0.8
+Collapse,normal,1,0,0.8,1

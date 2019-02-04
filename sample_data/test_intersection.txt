@@ -1,0 +1,40 @@
+import sys
+sys.path.append('../../../common')
+import utils
+import numpy
+%matplotlib inline 
+
+capacity_curves_file = '/Users/vitorsilva/Documents/GEM/git/gem/rmtk_data/all_curves.csv'
+capacity_curves = utils.read_capacity_curves(capacity_curves_file)
+gmrs_folder = '/Users/vitorsilva/Documents/GEM/git/gem/rmtk_data/accelerograms'
+gmrs = utils.read_gmrs(gmrs_folder)
+time = gmrs['time'][0]
+acc = gmrs['acc'][0]
+T = numpy.linspace(0.06,8,50)
+spectrum = utils.compute_spectrum(acc,time,T,0.05)
+
+for i in range(len(capacity_curves['Sd'])):
+#for i in range(1):
+
+    Sd = capacity_curves['Sd'][i]
+    Sa = capacity_curves['Sa'][i]
+    curve2 = [spectrum['Sd'],spectrum['Sa']]
+    utils.find_intersection([Sd,Sa],[spectrum['Sd'],spectrum['Sa']],True)
+	
+	
+   Sd, damping = optimize.fmin(calculate_performance_point, [capacity_curves['Sdy'][icc],0.05], args=(gmrs,igmr,capacity_curves,icc,damping_model), xtol=0.001, ftol=0.001, disp = False, )
+    print Sd
+    print damping
+    
+    Sdy = capacity_curves['Sdy'][icc]
+    Say = capacity_curves['Say'][icc]
+    Sd = capacity_curves['Sd'][icc]
+    Sa = capacity_curves['Sa'][icc]
+    Sdu = Sd[-1]
+    time = gmrs['time'][igmr]
+    acc = gmrs['acc'][igmr]
+    T = numpy.linspace(0.06,8,50)
+    spectrum = utils.compute_spectrum(acc,time,T,damping)
+    Sdi,Sai = utils.find_intersection([Sd,Sa],[spectrum['Sd'],spectrum['Sa']],True)
+    print calculate_damping(damping_model,Sdy,Sdu,Sdi[0],4)
+

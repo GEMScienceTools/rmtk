@@ -1,0 +1,24 @@
+Vb-droof,FALSE,,,,
+Vb-dfloor,TRUE,,,,
+Sd-Sa,FALSE,,,,
+Periods [s],1.52,1.63,,,
+Ground heights [m],3,3,,,
+Regular heights [m],2.5,2.5,,,
+Gamma participation factors,1.24,1.24,,,
+Number storeys,7,7,,,
+Vb1 [kN],0,1,2,3,
+dfloor1-1,0.1,0.1,0.1,0.1,
+dfloor1-2,0.1,0.1,0.1,0.1,
+dfloor1-3,0.1,0.1,0.1,0.1,
+dfloor1-4,0.1,0.1,0.1,0.1,
+dfloor1-5,0.1,0.1,0.1,0.1,
+dfloor1-6,0.1,0.1,0.1,0.1,
+dfloor1-7,0.1,0.1,0.1,0.1,
+Vb2 [kN],0,1,2,3,4
+dfloor2-1,0.1,0.1,0.1,0.1,0.1
+dfloor2-2,0.1,0.1,0.1,0.1,0.1
+dfloor2-3,0.1,0.1,0.1,0.1,0.1
+dfloor2-4,0.1,0.1,0.1,0.1,0.1
+dfloor2-5,0.1,0.1,0.1,0.1,0.1
+dfloor2-6,0.1,0.1,0.1,0.1,0.1
+dfloor2-7,0.1,0.1,0.1,0.1,0.1

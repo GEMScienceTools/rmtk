@@ -1,0 +1,6 @@
+Type,spectral displacement,,
+Damage States,distribution,Median,Dispersion
+Slight,normal,0.01,0
+Moderate,normal,0.05,0.1
+Extensive,normal,0.1,0.2
+Collapse,normal,0.2,0.25

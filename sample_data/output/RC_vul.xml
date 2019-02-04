@@ -1,0 +1,4 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<nrml xmlns = "http://openquake.org/xmlns/nrml/0.5">
+<vulnerabilityModel id = "RC" assetCategory = "buildings" lossCategory = "economic">
+   <description>vulnerability model for RC</description>

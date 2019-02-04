@@ -1,0 +1,5 @@
+Type,strain dependent,,,
+Damage States,Criteria,distribution,mean,cov
+light,Sdy,lognormal,,0
+significant damage,fraction Sdu,lognormal,0.75,0
+collapse,strain,lognormal,0.0075 0.0225,0.45 0.45

@@ -1,0 +1,6 @@
+Type,interstorey drift,,
+Damage States,distribution,,
+deformed shape path,TRUE,ISD_Sd.csv,
+Moderate,normal,0.01,0
+Heavy,normal,0.043,0
+Collapse,normal,0.057,0

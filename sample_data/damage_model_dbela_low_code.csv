@@ -1,0 +1,5 @@
+Type,strain dependent,,,
+Damage States,Criteria,distribution,mean,cov
+LS1,Sdy,lognormal,,0
+LS2,strain,lognormal,0.0045 0.0125,0.45 0.45
+LS3,strain,lognormal,0.0075 0.0225,0.45 0.45

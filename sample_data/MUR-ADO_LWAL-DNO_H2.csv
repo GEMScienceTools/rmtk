@@ -1,0 +1,10 @@
+Vb-droof,FALSE
+Vb-dfloor,FALSE
+Sd-Sa,TRUE
+Periods [s],0.309917 
+Heights [m],5.200000 
+Gamma participation factors,1.300000 
+Sdy [m],0.004000,0.004000 
+Say [g],0.188000,0.188000 
+Sd1 [m],0.000000,0.000562,0.004000,0.020000 
+Sa1 [g],0.000000,0.094000,0.188000,0.190000 
